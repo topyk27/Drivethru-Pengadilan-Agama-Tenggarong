@@ -155,6 +155,7 @@
 			$("#sidebar_antrian").addClass("active");
 			$("#sidebar_semua_antrian").addClass("active");
 			moment.locale('id');
+			$.fn.dataTable.moment('LL');
 			dt_antrian = $("#dt_antrian").DataTable({
 				dom : 'Bfrtip',
 				order : [[1,'asc']],

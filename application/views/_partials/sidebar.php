@@ -49,5 +49,11 @@
 				<p>Bantuan</p>
 			</a>
 		</li>
+		<li class="nav-item">
+			<a href="javascript:Tawk_API.toggle();" class="nav-link" id="sidebar_bantuan">
+				<i class="nav-icon fas fa-comment-dots"></i>
+				<p>Chat</p>
+			</a>
+		</li>
 	</ul>
 </nav>

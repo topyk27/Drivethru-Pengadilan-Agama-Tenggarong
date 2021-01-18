@@ -23,6 +23,9 @@
 		<li class="nav-item d-none d-sm-inline-block">
 			<a href="<?php echo base_url('bantuan') ?>" class="nav-link">Bantuan</a>
 		</li>
+		<li class="nav-item d-none d-sm-inline-block">
+			<a href="javascript:Tawk_API.toggle();" class="nav-link">Chat</a>
+		</li>
 	</ul>
 <?php if($this->session->userdata('login')): ?>
 	<ul class="navbar-nav ml-auto">

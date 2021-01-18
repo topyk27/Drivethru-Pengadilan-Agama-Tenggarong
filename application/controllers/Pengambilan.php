@@ -165,6 +165,12 @@ class Pengambilan extends CI_Controller
 		$this->load->view("cetak_antrian");
 	}
 
+	public function cek_data_perkara()
+	{
+		$data_perkara = $this->M_pengambilan->cek_data_perkara();
+		echo json_encode($data_perkara);
+	}
+
 }
 
  ?>

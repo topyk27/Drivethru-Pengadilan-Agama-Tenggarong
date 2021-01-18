@@ -191,6 +191,7 @@ class Bos extends CI_Controller
 			echo "0";
 		}
 	}
+
 }
 
  ?>

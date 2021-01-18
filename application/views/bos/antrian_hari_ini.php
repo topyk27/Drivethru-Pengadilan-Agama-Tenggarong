@@ -138,6 +138,7 @@
 			$("#sidebar_antrian").addClass("active");
 			$("#sidebar_antrian_hari_ini").addClass("active");
 			moment.locale('id');
+			$.fn.dataTable.moment('LL');
 			dt_antrian = $("#dt_antrian").DataTable({
 				dom : 'Bfrtip',
 				order : [[7,'desc']],

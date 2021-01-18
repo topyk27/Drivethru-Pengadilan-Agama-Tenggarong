@@ -28,6 +28,11 @@ class M_pengambilan extends CI_Model
 				'label' => 'no_perkara',
 				'rules' => 'required',
 			],
+			// [
+			// 	'field' => 'jenis_perkara',
+			// 	'label' => 'jenis_perkara',
+			// 	'rules' => 'required',
+			// ],
 			[
 				'field' => 'pihak',
 				'label' => 'pihak',
@@ -78,16 +83,20 @@ class M_pengambilan extends CI_Model
 	public function insert()
 	{
 		$post = $this->input->post();
-		$this->no_perkara = $post['no_perkara'];
+		// $this->no_perkara = $post['no_perkara'];
+		// $this->jenis_perkara = $post['jenis_perkara'];
+		// $this->no_perkara_tahun = $post['no_perkara_tahun'];
+		$this->no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun']."/PA.Tgr";
 		$this->pihak = $post['pihak'];
 		$this->nama = $post['nama'];
 		$this->no_hp = $post['no_hp'];
-		// $this->no_ac = $post['no_ac'];
+		$this->no_ac = $post['no_ac'];
 		$this->jadwal = $post['jadwal'];
 		$this->antrian = $this->ambil_antrian($this->jadwal);
 		$this->created_at = date('Y-m-d H:i:s');
 		$this->updated_at = date('Y-m-d H:i:s');
 		$this->db->insert($this->table,$this);
+		// print_r($this->db->last_query());
 
 		$respon['success'] = $this->db->affected_rows();
 		$respon['antrian'] = $this->antrian;
@@ -193,6 +202,7 @@ class M_pengambilan extends CI_Model
 		$this->antrian = $post['antrian'];
 		$this->db->update($this->table, $this, ['id' => $id]);
 		return $this->db->affected_rows();
+		// print_r($this->db->last_query());
 	}
 
 	public function delete($id)
@@ -229,6 +239,48 @@ class M_pengambilan extends CI_Model
 		// print_r($statement);
 		$query = $this->db->query($statement);
 		return $query->result();
+	}
+
+	public function cek_data_perkara()
+	{
+		$post = $this->input->post();
+		$no_perkara = $post['nmr_perkara'];
+		$perkara = $post['perkara'];
+		// $no_perkara = "521/Pdt.P/2020/PA.Tgr";
+		// $perkara = "permohonan";
+		if($perkara == "gugatan")
+		{
+			$statement = "SELECT p.perkara_id, p.pihak1_text AS p, p.pihak2_text AS t, ac.nomor_akta_cerai FROM perkara AS p, perkara_akta_cerai AS ac WHERE p.perkara_id = ac.perkara_id AND p.nomor_perkara = '$no_perkara' ";
+		}
+		else
+		{
+			$statement = "SELECT perkara_id, pihak1_text AS p, pihak2_text AS t FROM perkara where nomor_perkara = '$no_perkara' ";
+		}
+		$query = $this->db->query($statement);
+		$result = $query->result();
+		$row = $query->row();
+		if(!empty($result))
+		{
+			if($perkara == "gugatan")
+			{
+				if(isset($row->nomor_akta_cerai))
+				{
+					return $result;
+				}
+				else
+				{
+					return "belum terbit";
+				}
+			}
+			else
+			{
+				return $result;
+			}
+		}
+		else
+		{
+			return "kosong";
+		}
 	}
 }
 

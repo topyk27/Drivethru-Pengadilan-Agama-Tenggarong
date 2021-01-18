@@ -39,15 +39,50 @@
 								</div>
 								<form role="form" method="post">
 									<div class="card-body">
-										<div class="form-group">
+										<!-- <div class="form-group">
 											<label for="no_perkara">Nomor Perkara ( Contoh : 695/Pdt.G/2020/PA.Tgr )</label>
 											<input type="text" name="no_perkara" class="form-control <?php echo form_error('no_perkara') ? 'is-invalid' : '' ?>" value="<?php echo set_value('no_perkara'); ?>" placeholder="695/Pdt.G/2020/PA.Tgr" required>
 											<div class="invalid-feedback">
 												<?php echo form_error('no_perkara'); ?>
 											</div>
+										</div> -->
+										<div class="form-group">
+											<label for="jenis_perkara">Jenis Perkara</label>
+											<select class="form-control <?php echo form_error('jenis_perkara') ? 'is-invalid' : '' ?>" name="jenis_perkara">
+												<option>Pilih Jenis Perkara</option>
+												<option value="/Pdt.G/" <?php echo set_select('jenis_perkara', '/Pdt.G/'); ?>>Gugatan</option>
+												<option value="/Pdt.P/" <?php echo set_select('jenis_perkara', '/Pdt.P/'); ?>>Permohonan</option>
+											</select>
+											<!-- <select class="form-control" name="jenis_perkara">
+												<option value="/Pdt.G/">Gugatan</option>
+												<option value="/Pdt.P/">Permohonan</option>
+											</select> -->
 										</div>
 
-										<div class="form-group">
+										<div class="form-row">
+											<div class="col-md-5">
+												<label for="no_perkara">Nomor Perkara</label>
+												<input type="text" class="form-control <?php echo form_error('no_perkara') ? 'is-invalid' : '' ?>" name="no_perkara" value="<?php echo set_value('no_perkara'); ?>" placeholder="1262" required="" id="no_perkara">
+												<div class="invalid-feedback">
+												  <?php echo form_error('no_perkara') ?>
+												</div>
+											</div>
+											<div class="col-md-1 mt-auto">
+												<input type="text" name="perkara" class="form-control" readonly="" value="<?php echo set_value('jenis_perkara') ?>">
+											</div>
+											<div class="col-md-5">
+												<label for="no_perkara_tahun">Tahun</label>
+												<input type="text" class="form-control <?php echo form_error('no_perkara_tahun') ? 'is-invalid' : '' ?>" name="no_perkara_tahun" value="<?php echo set_value('no_perkara_tahun'); ?>" placeholder="2019" required="">
+												<div class="invalid-feedback">
+												  <?php echo form_error('no_perkara_tahun') ?>
+												</div>
+											</div>
+											<div class="col-auto mt-auto">
+												<button type="button" class="btn btn-success" id="btn_cek_perkara">Check</button>
+											</div>
+										</div>
+
+										<!-- <div class="form-group">
 											<label style="margin-right: 10px;">Pihak</label>
 											<div class="form-check form-check-inline">
 												<input type="radio" name="pihak" class="form-check-input <?php echo form_error('pihak') ? 'is-invalid' : '' ?>" value="penggugat" <?php echo set_radio('pihak', 'penggugat'); ?>>
@@ -60,9 +95,51 @@
 											<div class="invalid-feedback">
 												<?php echo form_error('pihak'); ?>
 											</div>
+										</div> -->
+										<div class="form-group" id="row_pihak" style="display: none;">
+											<label for="pihak">Pihak</label>
+											<select class="form-control <?php echo form_error('pihak') ? 'is-invalid' : '' ?>" name="pihak">
+												<option>Pilih Pihak</option>
+												<option value="penggugat" <?php echo set_select('pihak', 'penggugat'); ?>>Penggugat</option>
+												<option value="tergugat" <?php echo set_select('pihak', 'tergugat'); ?>>Tergugat</option>
+											</select>
+											<div class="invalid-feedback">
+												<?php echo form_error('pihak'); ?>
+											</div>
 										</div>
 
-										<div class="form-group">
+										<div id="sembunyikan" style="display: none;">
+											<div class="form-group">
+												<label for="nama">Nama</label>
+												<input type="text" class="form-control <?php echo form_error('nama') ? 'is-invalid':'' ?>" name="nama" value="<?php echo set_value('nama'); ?>" placeholder="Nama Lengkap" required readonly>
+												<div class="invalid-feedback">
+												  <?php echo form_error('nama') ?>
+												</div>
+											</div>
+
+											<div class="form-group" style="display: none;">
+												<label for="no_ac">Nomor Akta Cerai</label>
+												<input type="text" class="form-control <?php echo form_error('no_ac') ? 'is-invalid':'' ?>" name="no_ac" value="<?php echo set_value('no_ac'); ?>" required readonly>
+											</div>
+
+											<div class="form-group">
+												<label for="no_hp">Nomor HP</label>
+												<input type="text" class="form-control <?php echo form_error('no_hp') ? 'is-invalid':'' ?>" name="no_hp" value="<?php echo set_value('no_hp'); ?>" placeholder="Nomor HP" required>
+												<div class="invalid-feedback">
+												  <?php echo form_error('no_hp') ?>
+												</div>
+											</div>
+
+											<div class="form-group">
+												<label for="jadwal">Tanggal Pengambilan</label>
+												<input type="date" name="jadwal" class="form-control col-sm-3 <?php echo form_error('jadwal') ? 'is-invalid' : '' ?>" value="<?php echo set_value('jadwal', date('Y-m-d')); ?>" required>
+												<div class="invalid-feedback">
+													<?php echo form_error('jadwal'); ?>
+												</div>
+											</div>
+										</div>
+
+										<!-- <div class="form-group">
 											<label for="nama">Nama Lengkap ( Contoh : Ismi Haulainil Fitri binti Abdul Wa'it )</label>
 											<input type="text" name="nama" class="form-control <?php echo form_error('nama') ? 'is-invalid' : '' ?>" value="<?php echo set_value('nama'); ?>" placeholder="Nama lengkap" required>
 											<div class="invalid-feedback">
@@ -92,19 +169,20 @@
 											<div class="invalid-feedback">
 												<?php echo form_error('jadwal'); ?>
 											</div>
-										</div>
+										</div> -->
 
 										<div class="form-group">
 											<p class="lead">Untuk persyaratan pengambilan produk Pengadilan Agama Tenggarong, silahkan anda menyiapkan :</p>
 											<ul class="list-group">
 												<li class="list-group-item d-flex justify-content-between align-items-center">
-													Fotokopi KTP
+													Fotokopi KTP atau SIM
 													<span class="badge badge-primary badge-pill">1 Lembar</span>
 												</li>
 											</ul>
+											<p class="lead bg-info mt-3 pl-3">Pengambilan produk akta cerai tidak bisa diwakilkan, harus yang bersangkutan untuk mengambil.</p>
 										</div>
 
-										<div class="form-group">
+										<!-- <div class="form-group">
 											<p class="lead">Untuk pengambilan menggunakan surat kuasa, silahkan anda menyiapkan :</p>
 											<ul class="list-group">
 												<li class="list-group-item d-flex justify-content-between align-items-center">
@@ -120,7 +198,7 @@
 													<span class="badge badge-primary badge-pill">1 Lembar</span>
 												</li>
 											</ul>
-										</div>
+										</div> -->
 
 										<div class="form-group">
 											<p class="lead">Biaya pengambilan produk Pengadilan Agama Tenggarong :</p>
@@ -139,17 +217,22 @@
 													Rp. 500 / lembar
 												</dd>
 
-												<dt class="col-sm-3">
+												<!-- <dt class="col-sm-3">
 													Legalisir
 												</dt>
 												<dd class="col-sm-9">
 													Rp. 10.000 / lembar
-												</dd>
+												</dd> -->
 											</dl>
+										</div>
+
+										<div class="form-group">
+											<p class="lead">Silahkan datang pukul 10.00 membawa persyaratan yang sudah ditentukan dan diharapkan untuk membawa uang pas.
+											Dimohon untuk memasukkan nomor handphone yang dapat dihubungi. Terima Kasih. </p>
 										</div>
 									</div>
 									<div class="card-footer">
-										<button type="submit" class="btn btn-primary btn-lg btn-block">Ambil Antrian</button>
+										<button id="btn_ambil" type="submit" class="btn btn-primary btn-lg btn-block">Ambil Antrian</button>
 									</div>
 								</form>
 							</div>
@@ -224,17 +307,97 @@
 			}
 	?>
 	<script type="text/javascript">
-		if($('.invalid-feedback').is(':visible'))
-		{
-			$("#responSimbol").text('close');
-			$("#modal_titel").text('Kesalahan');
-			$("#modal_body").text('Ada yang salah, silahkan periksa formulir yang anda isi.');
-			$("#modal_footer").show();
-			$("#modal_footer").text('Periksa');
-			$('#modal').modal('show');
-		}
 		$(document).ready(function(){
 			$("#sidebar_pengambilan").addClass("active");
+			$("#btn_ambil").hide();
+			$("select[name=jenis_perkara]").on('change', function(){
+				$("input[name=perkara]").val(this.value);
+				$("#sembunyikan").hide();
+				$("#row_pihak").hide();
+				$("#btn_ambil").hide();
+				$("select[name='pihak']").prop("selectedIndex",0);
+			});
+			var nama_pihak = [];
+			$("#btn_cek_perkara").click(function(){
+				var no = $("input[name='no_perkara']").val().trim();
+				var tahun = $("input[name='no_perkara_tahun']").val().trim();
+				var jenis_perkara = $("input[name=perkara]").val().trim();
+				var nmr_perkara = no+jenis_perkara+tahun+"/PA.Tgr";
+				var perkara = jenis_perkara=="/Pdt.G/" ? "gugatan" : "permohonan";
+				$.ajax({
+					url: "<?php echo base_url('pengambilan/cek_data_perkara'); ?>",
+					method: "POST",
+					data: {nmr_perkara: nmr_perkara, perkara: perkara},
+					dataType: 'json',
+					success: function(data)
+					{
+						
+						if(data == "kosong")
+						{
+							alert("Nomor perkara tidak ditemukan, silahkan periksa kembali nomor pekrara anda");
+						}
+						else if(data == "belum terbit")
+						{
+							alert("Akta cerai belum terbit");
+						}
+						else
+						{
+							$("#row_pihak").show();
+							// $("select[name='pihak']").show();
+							// $("select[name='pihak']").prop('disabled', false);
+							// $("select[name='pihak']").prop("selectedIndex",0);
+							nama_pihak = [data[0]["p"],data[0]["t"]];
+							console.log(data[0]);
+							$("input[name='no_ac']").val(data[0]["nomor_akta_cerai"]);
+							if(perkara == "gugatan")
+							{
+								$("select[name=pihak] option[value=penggugat]").text("Penggugat");
+								$("select[name=pihak] option[value=tergugat]").text("Tergugat");
+							}
+							else
+							{
+								$("select[name=pihak] option[value=penggugat]").text("Pemohon");
+								$("select[name=pihak] option[value=tergugat]").text("Termohon");
+							}
+						}
+					}
+				});
+			});
+
+			$("select[name='pihak']").on('change', function(){
+				if(this.value == "penggugat")
+				{
+					$("input[name='nama']").val(nama_pihak[0]);
+					$("#sembunyikan").show();
+					$("#btn_ambil").show();
+				}
+				else if(this.value == "tergugat")
+				{
+					$("input[name='nama']").val(nama_pihak[1]);
+					$("#sembunyikan").show();
+					$("#btn_ambil").show();
+				}
+				else
+				{
+					$("input[name='nama']").val("");
+					$("#sembunyikan").hide();
+				}
+			});
+
+			// if($('.invalid-feedback').is(':visible'))
+			if($('.invalid-feedback').children().length > 0)
+			{
+				$("#responSimbol").text('close');
+				$("#modal_titel").text('Kesalahan');
+				$("#modal_body").text('Ada yang salah, silahkan periksa formulir yang anda isi.');
+				$("#modal_footer").show();
+				$("#modal_footer").text('Periksa');
+				$('#modal').modal('show');
+				$("#sembunyikan").show();
+				$("#row_pihak").show();
+				$("#btn_ambil").show();
+				$("#btn_cek_perkara").trigger('click');
+			}
 		});
 	</script>
 
