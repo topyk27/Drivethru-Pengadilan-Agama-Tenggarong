@@ -15,14 +15,20 @@ class Pengambilan extends CI_Controller
 		$this->load->library('session');
 	}
 
+
 	public function cek_jadwal($jadwal)
 	{
 		$no_perkara = $this->input->post('no_perkara');
-		$nama = $this->input->post('nama');
+		$pihak = $this->input->post('pihak');
 		$pengambilan = $this->M_pengambilan;
-		if(strtotime($jadwal) > time()+86400) //kalo lebih dari 24 jam berarti boleh ambil
+		$hari_ini = new DateTime(date("Y-m-d"));
+		$hari_ini->modify('+1 day');
+		$besok = $hari_ini->getTimestamp();
+
+		// if(strtotime($jadwal) > time()+86400) //fix kalo lebih dari 24 jam berarti boleh ambil
+		if(strtotime($jadwal) >= $besok ) // test kalo lebih dari 24 jam berarti boleh ambil
 		{
-			if($pengambilan->cek_udah_ambil($no_perkara,$nama,$jadwal)) //cek udah ambil antrian hari itu apa belum
+			if($pengambilan->cek_udah_ambil($no_perkara,$pihak,$jadwal)) //cek udah ambil antrian hari itu apa belum
 			{
 				if($pengambilan->cek_antrian($jadwal) < 10) //kalo antrian kurang dari 10 berarti boleh ambil
 				{
@@ -47,6 +53,46 @@ class Pengambilan extends CI_Controller
 			// print_r("nay");
 			return FALSE;
 		}
+	}
+
+	public function cek_ac_dah_diambil()
+	{
+		$post = $this->input->post();
+		$no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun']."/PA.Tgr";
+		$pihak = $post['pihak'];
+		$p = $this->M_pengambilan;
+		$pengambilan;
+		if(empty($post['pengambilan']))
+		{
+			$this->form_validation->set_message('cek_ac_dah_diambil', 'Pilih produk yang ingin diambil');
+			return false;
+		}
+		else
+		{
+			$pengambilan = $post['pengambilan'];
+		}
+		// $no_perkara = '695/Pdt.G/2020/PA.Tgr';
+		// $pihak = "penggugat";
+		// $pengambilan = ["ac","salinan"];
+		// print_r($pengambilan);
+		if($pengambilan[0]=="ac")
+		{
+			
+			if($p->cek_udah_ambil_ac($no_perkara,$pihak))
+			{
+				return true; //berarti belum diambil
+			}
+			else
+			{
+				$this->form_validation->set_message('cek_ac_dah_diambil', 'Anda sudah pernah mengambil akta cerai');
+				return false;
+			}
+		}
+		else
+		{
+			return true;
+		}
+
 	}
 
 	public function tgl_indo($tanggal) //format dari asal (Y-m-d)
@@ -103,6 +149,8 @@ class Pengambilan extends CI_Controller
 				$this->session->set_flashdata('antrian', $respon['antrian']);
 				$this->session->set_flashdata('no_perkara', $respon['no_perkara']);
 				$this->session->set_flashdata('nama', $respon['nama']);
+				$this->session->set_flashdata('ac', $respon['ac']);
+				$this->session->set_flashdata('salinan', $respon['salinan']);
 				$this->session->set_flashdata('jadwal', $this->tgl_indo($respon['jadwal']));
 			}
 			else
@@ -136,6 +184,8 @@ class Pengambilan extends CI_Controller
 				$this->session->set_flashdata('nama',$respon->nama);
 				$jadwal = $this->tgl_indo($respon->jadwal);
 				$this->session->set_flashdata('jadwal',$jadwal);
+				$this->session->set_flashdata('ac',$respon->ac);
+				$this->session->set_flashdata('salinan',$respon->salinan);
 				redirect('pengambilan/cetak_antrian');
 			}
 			else

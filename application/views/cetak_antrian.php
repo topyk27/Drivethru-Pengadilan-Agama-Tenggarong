@@ -49,6 +49,17 @@
                       <td>Tanggal Pengambilan</td>
                       <td><?php echo $this->session->userdata('jadwal'); ?></td>
                     </tr>
+                    <tr rowspan="2">
+                      <td>Produk yang diambil</td>
+                      <td colspan="2">
+                        <?php
+                        $a = ($this->session->userdata('ac')) ? "Akta Cerai" : "";
+                        $a .= ($this->session->userdata('ac') && $this->session->userdata('salinan')) ? "<br/> dan <br/>" : "";
+                        $a .=($this->session->userdata('salinan')) ? "Salinan Penetapan/Putusan" : "";
+                        echo $a;
+                        ?>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
                 <!-- <h1 id="text02" style="text-align: center;">Antrian</h1> -->

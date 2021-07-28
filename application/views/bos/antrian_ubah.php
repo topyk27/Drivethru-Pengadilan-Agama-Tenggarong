@@ -53,14 +53,6 @@
 										<div class="form-group">
 											<label style="margin-right: 10px;">Pihak</label>
 											<input type="text" name="pihak" class="form-control <?php echo form_error('pihak') ? 'is-invalid' : '' ?>" value="<?php if(empty(set_value('pihak'))) { echo $data_antrian->pihak;} else{ echo set_value('pihak');} ?>" readonly>
-											<!-- <div class="form-check form-check-inline">
-												<input type="radio" name="pihak" class="form-check-input <?php echo form_error('pihak') ? 'is-invalid' : '' ?>" value="penggugat" <?php if($data_antrian->pihak == "penggugat"){ echo set_radio('pihak','penggugat', TRUE); } ?>>
-												<label class="form-check-label" for="pihak">Penggugat</label>
-											</div>
-											<div class="form-check form-check-inline">
-												<input type="radio" name="pihak" class="form-check-input <?php echo form_error('pihak') ? 'is-invalid' : '' ?>" value="tergugat" <?php if($data_antrian->pihak == "tergugat"){ echo set_radio('pihak','tergugat', TRUE); } ?>>
-												<label class="form-check-label" for="pihak">Tergugat</label>
-											</div> -->
 											<div class="invalid-feedback">
 												<?php echo form_error('pihak'); ?>
 											</div>
@@ -81,7 +73,17 @@
 												<?php echo form_error('no_hp'); ?>
 											</div>
 										</div>
-
+										<div class="form-group">
+											<label for="pengambilan[]">Produk yang ingin diambil</label>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" name="pengambilan[]" id="pengambilan_ac" value="ac" <?php if($data_antrian->ac){echo "checked";} ?>>
+												<label class="form-check-label" for="pengambilan_ac">Akta Cerai</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" name="pengambilan[]" id="pengambilan_salinan" value="salinan" <?php if($data_antrian->salinan){echo "checked";} ?>>
+												<label class="form-check-label" for="pengambilan_salinan">Salinan Putusan / Penetapan</label>
+											</div>
+										</div>
 										<div class="form-group">
 											<label for="no_ac">Nomor Akta Cerai</label>
 											<input type="text" name="no_ac" class="form-control <?php echo form_error('no_ac') ? 'is-invalid' : '' ?>" value="<?php if(empty(set_value('no_ac'))) { echo $data_antrian->no_ac; } else{ echo set_value('no_ac');} ?>" required readonly="readonly">
@@ -118,23 +120,6 @@
 											<p class="lead bg-info mt-3 pl-3">Pengambilan produk akta cerai tidak bisa diwakilkan, harus yang bersangkutan untuk mengambil.</p>
 										</div>
 
-										<!-- <div class="form-group">
-											<p class="lead">Untuk pengambilan menggunakan surat kuasa, silahkan anda menyiapkan :</p>
-											<ul class="list-group">
-												<li class="list-group-item d-flex justify-content-between align-items-center">
-													Surat kuasa bermaterai 6000 dan sudah bertanda tangan
-													<span class="badge badge-primary badge-pill">Asli</span>
-												</li>
-												<li class="list-group-item d-flex justify-content-between align-items-center">
-													Fotokopi KTP pemberi kuasa
-													<span class="badge badge-primary badge-pill">1 Lembar</span>
-												</li>
-												<li class="list-group-item d-flex justify-content-between align-items-center">
-													Fotokopi KTP penerima kuasa
-													<span class="badge badge-primary badge-pill">1 Lembar</span>
-												</li>
-											</ul>
-										</div> -->
 
 										<div class="form-group">
 											<p class="lead">Biaya pengambilan produk Pengadilan Agama Tenggarong :</p>
@@ -153,12 +138,6 @@
 													Rp. 500 / lembar
 												</dd>
 
-												<!-- <dt class="col-sm-3">
-													Legalisir
-												</dt>
-												<dd class="col-sm-9">
-													Rp. 10.000 / lembar
-												</dd> -->
 											</dl>
 										</div>
 

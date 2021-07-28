@@ -55,6 +55,7 @@
 												<th>NO Akta Cerai</th>
 												<th>Nama</th>
 												<th>Pihak</th>
+												<th>Pengambilan</th>
 												<th>NO HP</th>
 												<th>Jadwal Pengambilan</th>
 												<th>Antrian</th>
@@ -141,7 +142,7 @@
 			$.fn.dataTable.moment('LL');
 			dt_antrian = $("#dt_antrian").DataTable({
 				dom : 'Bfrtip',
-				order : [[7,'desc']],
+				order : [[8,'desc']],
 				ajax : {
 					url : '<?php echo base_url('bos/data_antrian_hari_ini'); ?>',
 					dataSrc : "",
@@ -155,6 +156,12 @@
 				{data : "no_ac"},
 				{data : "nama"},
 				{data : "pihak"},
+				{data : null, sortable: false, render:function(data,type,row,meta){
+					ret = (row['ac']=="1") ? "Akta Cerai" : "";
+					ret += (row['ac']=="1" && row['salinan']=="1") ? "<br/> dan <br/>" : "";
+					ret += (row['salinan']=="1") ? "Salinan" : "";
+					return ret;
+				}},
 				{data : "no_hp"},
 				{data : "jadwal"},
 				{data : "antrian"},
@@ -168,11 +175,11 @@
 					visible : false,
 				},
 				{
-					targets : [9],
+					targets : [10],
 					orderable : false,
 				},
 				{
-					targets : 7,
+					targets : 8,
 					data: "jadwal",
 					render : function(data,type,row,meta){
 						var dateObj = new Date(data);

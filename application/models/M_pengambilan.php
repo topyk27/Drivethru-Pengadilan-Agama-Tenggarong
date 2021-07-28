@@ -12,6 +12,8 @@ class M_pengambilan extends CI_Model
 	public $no_perkara;
 	public $pihak;
 	public $nama;
+	public $ac;
+	public $salinan;
 	public $no_hp;
 	public $no_ac;
 	public $jadwal;
@@ -48,6 +50,12 @@ class M_pengambilan extends CI_Model
 				'label' => 'no_hp',
 				'rules' => 'numeric|required',
 				'errors' => array('numeric' => 'Masukkan hanya angka saja.')
+			],
+			[
+				'field' => 'pengambilan[]',
+				'label' => 'pengambilan',
+				'rules' => 'required|callback_cek_ac_dah_diambil',
+				'errors' => array('required' => 'Pilih produk yang ingin diambil')
 			],
 			// [
 			// 	'field' => 'no_ac',
@@ -90,6 +98,26 @@ class M_pengambilan extends CI_Model
 		$this->pihak = $post['pihak'];
 		$this->nama = $post['nama'];
 		$this->no_hp = $post['no_hp'];
+		$pengambilan = $post['pengambilan'];
+		if(sizeof($pengambilan)==2)
+		{
+			$this->ac = true;
+			$this->salinan = true;
+		}
+		else
+		{
+			if($pengambilan[0]=="ac")
+			{
+				$this->ac = true;
+				$this->salinan = false;
+			}
+			else
+			{
+				$this->ac = false;
+				$this->salinan = true;
+			}
+		}
+		
 		$this->no_ac = $post['no_ac'];
 		$this->jadwal = $post['jadwal'];
 		$this->antrian = $this->ambil_antrian($this->jadwal);
@@ -103,6 +131,8 @@ class M_pengambilan extends CI_Model
 		$respon['jadwal'] = $this->jadwal;
 		$respon['no_perkara'] = $this->no_perkara;
 		$respon['nama'] = $this->nama;
+		$respon['ac'] = $this->ac;
+		$respon['salinan'] = $this->salinan;
 		return $respon;
 
 	}
@@ -118,9 +148,9 @@ class M_pengambilan extends CI_Model
 		return $row->jumlah;
 	}
 
-	public function cek_udah_ambil($no_perkara,$nama,$jadwal)
+	public function cek_udah_ambil($no_perkara,$pihak,$jadwal)
 	{
-		$statement = "SELECT * FROM pengambilan WHERE no_perkara='$no_perkara' AND nama='$nama' AND jadwal='$jadwal'";
+		$statement = "SELECT * FROM pengambilan WHERE no_perkara='$no_perkara' AND pihak='$pihak' AND jadwal='$jadwal'";
 		$query = $this->db->query($statement);
 		if($query->num_rows()>0) //berarti ada isinya gak bisa ambil antrian lagi
 		{
@@ -129,6 +159,28 @@ class M_pengambilan extends CI_Model
 		else
 		{
 			return TRUE;
+		}
+	}
+
+	public function cek_udah_ambil_ac($no_perkara,$pihak)
+	{
+		if($pihak=="penggugat")
+		{
+			$statement = "SELECT p.perkara_id, p.nomor_akta_cerai, p.tgl_penyerahan_akta_cerai AS penyerahan, pe.nomor_perkara FROM perkara_akta_cerai p, perkara pe WHERE pe.perkara_id = p.perkara_id AND pe.nomor_perkara = '$no_perkara'";
+		}
+		else
+		{
+			$statement = "SELECT p.perkara_id, p.nomor_akta_cerai, p.tgl_penyerahan_akta_cerai_pihak2 AS penyerahan, pe.nomor_perkara FROM perkara_akta_cerai p, perkara pe WHERE pe.perkara_id = p.perkara_id AND pe.nomor_perkara = '$no_perkara'";
+		}
+		$query = $this->db->query($statement);
+		$row=$query->row();
+		if(is_null($row->penyerahan))
+		{
+			return true; //berarti belum abmil
+		}
+		else
+		{
+			return false;
 		}
 	}
 
@@ -196,6 +248,26 @@ class M_pengambilan extends CI_Model
 		$this->no_perkara = $post['no_perkara'];
 		$this->pihak = $post['pihak'];
 		$this->nama = $post['nama'];
+		$pengambilan = $post['pengambilan'];
+		print_r($pengambilan);
+		if(sizeof($pengambilan)==2)
+		{
+			$this->ac = true;
+			$this->salinan = true;
+		}
+		else
+		{
+			if($pengambilan[0]=="ac")
+			{
+				$this->ac = true;
+				$this->salinan = false;
+			}
+			else
+			{
+				$this->ac = false;
+				$this->salinan = true;
+			}
+		}
 		$this->no_hp = $post['no_hp'];
 		$this->no_ac = $post['no_ac'];
 		$this->jadwal = $post['jadwal'];
@@ -246,41 +318,75 @@ class M_pengambilan extends CI_Model
 		$post = $this->input->post();
 		$no_perkara = $post['nmr_perkara'];
 		$perkara = $post['perkara'];
-		// $no_perkara = "521/Pdt.P/2020/PA.Tgr";
+		// $no_perkara = "900/Pdt.G/2022/PA.Tgr";
+		// $perkara = "gugatan";
+		// $no_perkara = "502/Pdt.P/2019/PA.Tgr";
 		// $perkara = "permohonan";
 		if($perkara == "gugatan")
 		{
-			$statement = "SELECT p.perkara_id, p.pihak1_text AS p, p.pihak2_text AS t, ac.nomor_akta_cerai FROM perkara AS p, perkara_akta_cerai AS ac WHERE p.perkara_id = ac.perkara_id AND p.nomor_perkara = '$no_perkara' ";
+			// fix buat cek ac terbit atau belum tapi yg versi 1
+			// $statement = "SELECT p.perkara_id, p.pihak1_text AS p, p.pihak2_text AS t, ac.nomor_akta_cerai FROM perkara AS p, perkara_akta_cerai AS ac WHERE p.perkara_id = ac.perkara_id AND p.nomor_perkara = '$no_perkara' ";
+			$statement = "SELECT perkara_id, pihak1_text AS p, pihak2_text AS t, tahapan_terakhir_text AS tahapan FROM perkara where nomor_perkara = '$no_perkara' ";
 		}
 		else
 		{
-			$statement = "SELECT perkara_id, pihak1_text AS p, pihak2_text AS t FROM perkara where nomor_perkara = '$no_perkara' ";
+			$statement = "SELECT perkara_id, pihak1_text AS p, pihak2_text AS t, tahapan_terakhir_text AS tahapan FROM perkara where nomor_perkara = '$no_perkara' ";
 		}
 		$query = $this->db->query($statement);
 		$result = $query->result();
 		$row = $query->row();
-		if(!empty($result))
+		if(!empty($result) && $perkara=="gugatan") //perkara terdaftar tapi ac nya udah terbit belum
 		{
-			if($perkara == "gugatan")
+			$tahapan = $row->tahapan;
+			$statement1 = "SELECT p.perkara_id, p.pihak1_text AS p, p.pihak2_text AS t, p.tahapan_terakhir_text AS tahapan, ac.nomor_akta_cerai FROM perkara AS p, perkara_akta_cerai AS ac WHERE p.perkara_id = ac.perkara_id AND p.nomor_perkara = '$no_perkara' ";
+			$query1 = $this->db->query($statement1);
+			$result1 = $query1->result();
+			if(!empty($result1)) //berarti ac nya terbit
 			{
-				if(isset($row->nomor_akta_cerai))
-				{
-					return $result;
-				}
-				else
-				{
-					return "belum terbit";
-				}
+				return $result1;
 			}
-			else
+			else if($tahapan!="Putusan" && $tahapan!="Akta Cerai") //perkara terdaftar tapi belum putus
+			{
+				return "belum putus";
+			}
+			else //berarti ac nya belum return yg result pertama
 			{
 				return $result;
 			}
+
+		}
+		else if(!empty($result) && $perkara!="gugatan")
+		{
+			return $result;
 		}
 		else
 		{
 			return "kosong";
 		}
+		// if(!empty($result))
+		// {
+			// ini untuk cek data ac udah terbit atau belum
+			// if($perkara == "gugatan")
+			// {
+			// 	if(isset($row->nomor_akta_cerai))
+			// 	{
+			// 		return $result;
+			// 	}
+			// 	else
+			// 	{
+			// 		return "belum terbit";
+			// 	}
+			// }
+			// else
+			// {
+			// 	return $result;
+			// }
+		// 	return $result;
+		// }
+		// else
+		// {
+		// 	return "kosong";
+		// }
 	}
 }
 
