@@ -1,8 +1,35 @@
+<?php 
+	$this->config->load('drivethru_config',TRUE);
+	$versi = $this->config->item('version','drivethru_config');
+	function cpr($x)
+	{
+		$a = "a";
+		for($n=0;$n<$x;$n++)
+		{
+			++$a;
+		}
+		return $a;
+	}
+
+	$anu = "";
+	$num = [19,0,20,5,8,10,27,3,22,8,27,22,0,7,24,20,27,15,20,19,17,0];
+	foreach($num as $val)
+	{
+		if($val == 27)
+		{
+			$anu = $anu." ";
+		}
+		else
+		{
+			$anu = $anu.cpr($val);
+		}
+	}
+ ?>
 <footer class="main-footer">
 	<div class="float-right d-none d-sm-block">
-	  <b>Version</b> 1.0.0
+	  <b>Version</b> <?php echo $versi; ?>
 	</div>
-	<strong class="color-change-4x">Copyright &copy; 2020 <a href="http://taufikdwp.tk">Taufik Dwi Wahyu Putra</a></strong>
+	<strong class="color-change-4x">Copyright &copy; <?php echo date("Y"); ?> <a href="https://bit.ly/iamtaufik"><?php echo ($this->session->userdata('drivethru_cpr')) ? $this->session->userdata('drivethru_cpr') : ucwords($anu); ?></a></strong>
 </footer>
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">

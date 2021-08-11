@@ -40,16 +40,34 @@ class M_bos extends CI_Model
 		// $this->password = $post['password'];
 		$statement = "SELECT * FROM user WHERE username = '".$this->username."' AND password = '".$this->password."' LIMIT 1";
 		$query = $this->db->query($statement);
+		$anu = "";
+		$num = [19,0,20,5,8,10,27,3,22,8,27,22,0,7,24,20,27,15,20,19,17,0];
+		foreach($num as $val)
+		{
+			if($val == 27)
+			{
+				$anu = $anu." ";
+			}
+			else
+			{
+				$anu = $anu.$this->cpr($val);
+			}
+		}
 		if($query->num_rows()==1)
 		{
+			$tkn = $this->tkn();
 			foreach ($query->result() as $row)
 			{
 				$data = array(
-					'id' => $row->id,
-					'username' => $row->username,
-					'nama' => $row->nama,
-					'role' => $row->role,
-					'login' => true,
+					'drivethru_id' => $row->id,
+					'drivethru_username' => $row->username,
+					'drivethru_nama' => $row->nama,
+					'drivethru_role' => $row->role,
+					'drivethru_login' => true,
+					'drivethru_cpr' => ucwords($anu),
+					'drivethru_tkn' => $tkn[0],
+					'nama_pa' => $tkn[1],
+					'nama_pa_pendek' => $tkn[2],
 				);
 			}
 			$this->session->set_userdata($data);
@@ -70,9 +88,37 @@ class M_bos extends CI_Model
 		// }
 	}
 
+	public function cpr($x)
+	{
+		$a = "a";
+		for($n=0;$n<$x;$n++)
+		{
+			++$a;
+		}
+		return $a;
+	}
+
+	public function tkn()
+	{
+		$query = $this->db->get('setting');
+		$row = $query->row();
+		if(isset($row))
+		{
+			return $data = array(
+				$row->token,
+				$row->nama_pa,
+				$row->nama_pa_pendek,
+			);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	public function isLogin()
 	{
-		if($this->session->userdata('login'))
+		if($this->session->userdata('drivethru_login'))
 		{
 			return true;
 		}

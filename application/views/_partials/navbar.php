@@ -6,32 +6,53 @@
 		<li class="nav-item d-none d-sm-inline-block">
 			<a href="<?php echo base_url(); ?>" class="nav-link">Home</a>
 		</li>
-		<li class="nav-item d-none d-sm-inline-block">
-		  <a href="<?php echo base_url("pengambilan"); ?>" class="nav-link">Ambil Antrian</a>
+		<li class="nav-item dropdown">
+			<a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Antrian</a>
+			<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+				<li>
+					<a href="<?php echo base_url("pengambilan"); ?>" class="dropdown-item">
+					Ambil Antrian
+					</a>
+				</li>
+				<li>
+					<a href="<?php echo base_url("pengambilan/cetak"); ?>" class="dropdown-item">
+					Cetak Antrian
+					</a>
+				</li>
+				<?php if($this->session->userdata('drivethru_login')): ?>
+					<li>
+						<a href="<?php echo base_url('bos/antrian_hari_ini') ?>" class="dropdown-item">
+						Antrian Hari Ini
+						</a>
+					</li>
+					<li>
+						<a href="<?php echo base_url('bos/semua_antrian') ?>" class="dropdown-item">
+						Semua Antrian
+						</a>
+					</li>
+				<?php endif; ?>
+			</ul>
 		</li>
-		<li class="nav-item d-none d-sm-inline-block">
-		  <a href="<?php echo base_url("pengambilan/cetak"); ?>" class="nav-link">Cetak Antrian</a>
-		</li>
-	<?php if($this->session->userdata('login')): ?>
-		<li class="nav-item d-none d-sm-inline-block">
-			<a href="<?php echo base_url('bos/antrian_hari_ini') ?>" class="nav-link">Antrian Hari Ini</a>
-		</li>
-		<li class="nav-item d-none d-sm-inline-block">
-			<a href="<?php echo base_url('bos/semua_antrian') ?>" class="nav-link">Semua Antrian</a>
-		</li>
-	<?php endif; ?>
 		<li class="nav-item d-none d-sm-inline-block">
 			<a href="<?php echo base_url('bantuan') ?>" class="nav-link">Bantuan</a>
 		</li>
 		<li class="nav-item d-none d-sm-inline-block">
 			<a href="javascript:Tawk_API.toggle();" class="nav-link">Chat</a>
 		</li>
+	<?php if($this->session->userdata('drivethru_login')): ?>
+		<li class="nav-item d-none d-sm-inline-block">
+			<a href="<?php echo base_url('laporan/pengambilan') ?>" class="nav-link">Laporan</a>
+		</li>
+		<li class="nav-item d-none d-sm-inline-block">
+			<a href="<?php echo base_url('setting/sistem') ?>" class="nav-link">Pengaturan</a>
+		</li>
+	<?php endif; ?>
 	</ul>
-<?php if($this->session->userdata('login')): ?>
+<?php if($this->session->userdata('drivethru_login')): ?>
 	<ul class="navbar-nav ml-auto">
 		<li class="nav-item dropdown">
 			<a href="#" id="btn-logout" class="nav-link" data-toggle="dropdown" aria-expanded="false">
-				<span class="nav-link">PA Tenggarong <i class="fas fa-sign-out-alt"></i></span>
+				<span class="nav-link"><?php echo $this->session->userdata('drivethru_nama'); ?> <i class="fas fa-sign-out-alt"></i></span>
 			</a>
 		</li>
 	</ul>

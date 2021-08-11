@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Drive Thru | PA Tenggarong</title>
+	<title>Drive Thru | PA <?php echo empty($ttd->nama_pa) ? "false" : $ttd->nama_pa; ?></title>
 	<?php $this->load->view("_partials/css.php") ?>
 </head>
 <body class="hold-transition sidebar-mini">
@@ -16,7 +16,7 @@
 				<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-12">
-							<h1>Selamat Datang di Drive Thru Pengadilan Agama Tenggarong</h1>
+							<h1>Selamat Datang di Drive Thru Pengadilan Agama <?php echo empty($ttd->nama_pa) ? "false" : $ttd->nama_pa; ?></h1>
 						</div>
 					</div>
 				</div>
@@ -41,6 +41,7 @@
 			</section>
 		</div>
 		<?php $this->load->view("_partials/footer.php") ?>
+		<?php $this->load->view("_partials/loader.php") ?>
 	</div>
 	<!-- jQuery -->
 	<script src="<?php echo base_url('asset/js/jquery/jquery.min.js') ?>"></script>
@@ -58,59 +59,82 @@
 		var bulan = now.getMonth()+1;
 		moment.locale('id');
 		var nama_bulan = moment().format('MMMM');
+
+		var token = "<?php echo empty($ttd->token) ? "false" : $ttd->token; ?>";
+		var nama_pa = "<?php echo empty($ttd->nama_pa) ? "false" : $ttd->nama_pa; ?>";
+		var nama_pa_pendek = "<?php echo empty($ttd->nama_pa_pendek) ? "false" : $ttd->nama_pa_pendek; ?>";
+		if(token=="false")
+		{
+			location.replace("<?php echo base_url('aktivasi'); ?>");
+		}
+		$.ajax({
+			url: "https://raw.githubusercontent.com/topyk27/Drivethru-Pengadilan-Agama-Tenggarong/master/asset/mine/token/token.json",
+			method: "GET",
+			dataType: 'json',
+			beforeSend: function(){
+				$(".loader2").show();
+			},
+			success: function(data)
+			{
+				try{
+					if(nama_pa==data[nama_pa_pendek][0].nama_pa && nama_pa_pendek==data[nama_pa_pendek][0].nama_pa_pendek && token==data[nama_pa_pendek][0].token)
+					{
+						
+					}
+					else
+					{
+						location.replace("<?php echo base_url('aktivasi'); ?>");
+					}
+				}
+				catch(err)
+				{
+					location.replace("<?php echo base_url('aktivasi'); ?>");
+				}
+				$(".loader2").hide();
+			},
+			error: function(err)
+			{
+				$.ajax({
+					url: "<?php echo base_url('asset/mine/token/token.json'); ?>",
+					method: "GET",
+					dataType: 'json',
+					success: function(lokal)
+					{
+						try {
+							if(nama_pa==lokal[nama_pa_pendek][0].nama_pa && nama_pa_pendek==lokal[nama_pa_pendek][0].nama_pa_pendek && token==lokal[nama_pa_pendek][0].token)
+							{
+								
+							}
+							else
+							{
+								location.replace("<?php echo base_url('aktivasi'); ?>");
+							}
+						}
+						catch(err)
+						{
+							location.replace("<?php echo base_url('aktivasi'); ?>");
+						}
+						$(".loader2").hide();
+					},
+					error: function(err)
+					{
+						$(".loader2").hide();
+						alert('Gagal dapat data token, harap hubungi administrator');
+					}
+				});
+			}
+		});
+		
+
 		function jumlah_hari(bulan, tahun) {
 			return new Date(tahun,bulan,0).getDate();
 		}
 		$(document).ready(function(){
 			$("#title_statistik").text("Statistik Pengambilan Drive Thru Bulan "+nama_bulan);
 			$("#sidebar_home").addClass("active");
-			// var areaChartData = {
-			//   labels  : ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-			//   datasets: [
-			//     {
-			//       label               : 'Permohonan',
-			//       backgroundColor     : 'rgba(60,141,188,0.9)',
-			//       borderColor         : 'rgba(60,141,188,0.8)',
-			//       pointRadius          : false,
-			//       pointColor          : '#3b8bba',
-			//       pointStrokeColor    : 'rgba(60,141,188,1)',
-			//       pointHighlightFill  : '#fff',
-			//       pointHighlightStroke: 'rgba(60,141,188,1)',
-			//       data                : [28, 48, 40, 19, 86, 27, 90]
-			//     },
-			//     {
-			//       label               : 'Gugatan',
-			//       backgroundColor     : 'rgba(210, 214, 222, 1)',
-			//       borderColor         : 'rgba(210, 214, 222, 1)',
-			//       pointRadius         : false,
-			//       pointColor          : 'rgba(210, 214, 222, 1)',
-			//       pointStrokeColor    : '#c1c7d1',
-			//       pointHighlightFill  : '#fff',
-			//       pointHighlightStroke: 'rgba(220,220,220,1)',
-			//       data                : [65, 59, 80, 81, 56, 55, 40]
-			//     },
-			//   ]
-			// }
-			// var barChartCanvas = $('#barChart').get(0).getContext('2d')
-			// var barChartData = jQuery.extend(true, {}, areaChartData)
-			// var temp0 = areaChartData.datasets[0]
-			// var temp1 = areaChartData.datasets[1]
-			// barChartData.datasets[0] = temp1
-			// barChartData.datasets[1] = temp0
-
-			// var barChartOptions = {
-			//   responsive              : true,
-			//   maintainAspectRatio     : false,
-			//   datasetFill             : false
-			// }
-
-			// var barChart = new Chart(barChartCanvas, {
-			//   type: 'bar', 
-			//   data: barChartData,
-			//   options: barChartOptions
-			// });
+			
 			$.ajax({
-				url: '<?php echo base_url('pengambilan/statistik'); ?>',
+				url: "<?php echo base_url('pengambilan/statistik'); ?>",
 				method: 'GET',
 				dataType: 'json',
 				success: function(data)

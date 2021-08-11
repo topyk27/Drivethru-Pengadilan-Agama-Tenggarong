@@ -94,7 +94,7 @@ class M_pengambilan extends CI_Model
 		// $this->no_perkara = $post['no_perkara'];
 		// $this->jenis_perkara = $post['jenis_perkara'];
 		// $this->no_perkara_tahun = $post['no_perkara_tahun'];
-		$this->no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun']."/PA.Tgr";
+		$this->no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun'].$this->session->userdata('nama_pa_pendek');
 		$this->pihak = $post['pihak'];
 		$this->nama = $post['nama'];
 		$this->no_hp = $post['no_hp'];
@@ -249,7 +249,7 @@ class M_pengambilan extends CI_Model
 		$this->pihak = $post['pihak'];
 		$this->nama = $post['nama'];
 		$pengambilan = $post['pengambilan'];
-		print_r($pengambilan);
+		
 		if(sizeof($pengambilan)==2)
 		{
 			$this->ac = true;
@@ -387,6 +387,23 @@ class M_pengambilan extends CI_Model
 		// {
 		// 	return "kosong";
 		// }
+	}
+
+	public function cetak_laporan_pengambilan($bulan,$tahun)
+	{
+		$statement = "SELECT * FROM pengambilan WHERE MONTH(jadwal)=$bulan AND YEAR(jadwal)=$tahun ORDER BY jadwal ASC ";
+		$query = $this->db->query($statement);
+		return $query->result();
+	}
+
+	public function laporan_pengambilan_getByDate()
+	{
+		$post = $this->input->post();
+		$bulan = $post['bulan'];
+		$tahun = $post['tahun'];
+		$statement = "SELECT * FROM pengambilan WHERE MONTH(jadwal)=$bulan AND YEAR(jadwal)=$tahun ORDER BY jadwal ASC ";
+		$query = $this->db->query($statement);
+		return $query->result();
 	}
 }
 

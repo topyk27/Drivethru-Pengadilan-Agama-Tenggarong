@@ -12,8 +12,27 @@ class Bos extends CI_Controller
 		parent::__construct();
 		$this->load->model("M_bos");
 		$this->load->model("M_pengambilan");
+		$this->load->model("M_setting");
 		$this->load->library('form_validation');
 		$this->load->library('session');
+		$row = $this->M_setting->ttd();
+		if(isset($row))
+		{
+			$data_pa = array(
+				'drivethru_tkn' => $row->token,
+				'nama_pa' => $row->nama_pa,
+				'nama_pa_pendek' => $row->nama_pa_pendek,
+			);
+		}
+		else
+		{
+			$data_pa = array(
+				'drivethru_tkn' => 'belum',
+				'nama_pa' => 'belum',
+				'nama_pa_pendek' => 'belum',
+			);
+		}
+		$this->session->set_userdata($data_pa);
 	}
 
 	public function cek_jadwal($jadwal)
@@ -31,6 +50,43 @@ class Bos extends CI_Controller
 			// print_r("nay");
 			return FALSE;
 		}
+	}
+
+	public function cek_ac_dah_diambil()
+	{
+		$post = $this->input->post();
+		$no_perkara = $post['no_perkara'];
+		$pihak = $post['pihak'];
+		$p = $this->M_pengambilan;
+		$pengambilan;
+		if(empty($post['pengambilan']))
+		{
+			$this->form_validation->set_message('cek_ac_dah_diambil', 'Pilih produk yang ingin diambil');
+			return false;
+		}
+		else
+		{
+			$pengambilan = $post['pengambilan'];
+		}
+		
+		if($pengambilan[0]=="ac")
+		{
+			
+			if($p->cek_udah_ambil_ac($no_perkara,$pihak))
+			{
+				return true; //berarti belum diambil
+			}
+			else
+			{
+				$this->form_validation->set_message('cek_ac_dah_diambil', 'Anda sudah pernah mengambil akta cerai');
+				return false;
+			}
+		}
+		else
+		{
+			return true;
+		}
+
 	}
 
 	public function tgl_indo($tanggal) //format dari asal (Y-m-d)
@@ -67,6 +123,8 @@ class Bos extends CI_Controller
 	public function login()
 	{
 		$bos = $this->M_bos;
+		$this->load->model("M_setting");
+		$data['ttd'] = $this->M_setting->ttd();
 		if(!$bos->isLogin())
 		{
 			$validation = $this->form_validation;
@@ -84,7 +142,7 @@ class Bos extends CI_Controller
 					$this->session->set_flashdata('respon', 'kosong');
 				}
 			}
-			$this->load->view('bos/login');
+			$this->load->view('bos/login',$data);
 		}
 		else
 		{

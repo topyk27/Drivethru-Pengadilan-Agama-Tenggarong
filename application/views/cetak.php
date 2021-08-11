@@ -23,6 +23,7 @@
 								<li class="breadcrumb-item">
 									<a href="<?php echo base_url(); ?>">Home</a>
 								</li>
+								<li class="breadcrumb-item">Antrian</li>
 								<li class="breadcrumb-item active">Cetak Antrian</li>
 							</ol>
 						</div>
@@ -40,8 +41,8 @@
 								<form role="form" method="post">
 									<div class="card-body">
 										<div class="form-group">
-											<label for="no_perkara">Nomor Perkara ( Contoh : 695/Pdt.G/2020/PA.Tgr )</label>
-											<input type="text" name="no_perkara" class="form-control <?php echo form_error('no_perkara') ? 'is-invalid' : '' ?>" value="<?php echo set_value('no_perkara'); ?>" placeholder="695/Pdt.G/2020/PA.Tgr" required>
+											<label for="no_perkara">Nomor Perkara ( Contoh : 695/Pdt.G/2020/<?php echo $this->session->userdata('nama_pa_pendek'); ?> )</label>
+											<input type="text" name="no_perkara" class="form-control <?php echo form_error('no_perkara') ? 'is-invalid' : '' ?>" value="<?php echo set_value('no_perkara'); ?>" placeholder="695/Pdt.G/2020/<?php echo $this->session->userdata('nama_pa_pendek'); ?>" required>
 											<div class="invalid-feedback">
 												<?php echo form_error('no_perkara'); ?>
 											</div>
@@ -119,6 +120,7 @@
 	 ?>	
 	 <script type="text/javascript">
 	 	$(document).ready(function(){
+	 		$("#sidebar_antrian").addClass("active");
 	 		$("#sidebar_cetak").addClass("active");
 	 	});
 	 </script>

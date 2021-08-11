@@ -20,7 +20,27 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('welcome');
+		$this->load->model("M_setting");
+		$data['ttd'] = $this->M_setting->ttd();
+		$row = $data['ttd'];
+		if(isset($row))
+		{
+			$data_pa = array(
+				'drivethru_tkn' => $row->token,
+				'nama_pa' => $row->nama_pa,
+				'nama_pa_pendek' => $row->nama_pa_pendek,
+			);
+		}
+		else
+		{
+			$data_pa = array(
+				'drivethru_tkn' => 'belum',
+				'nama_pa' => 'belum',
+				'nama_pa_pendek' => 'belum',
+			);
+		}
+		$this->session->set_userdata($data_pa);
+		$this->load->view('welcome', $data);
 	}
 
 	public function bantuan()

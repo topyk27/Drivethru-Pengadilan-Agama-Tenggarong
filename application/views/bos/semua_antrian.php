@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Semua Antrian | PA Tenggarong</title>
+	<title>Semua Antrian | PA <?php echo $this->session->userdata('nama_pa'); ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php $this->load->view("_partials/css.php") ?>
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url('asset/datatables-bs4/css/dataTables.bootstrap4.min.css') ?>">
@@ -211,7 +211,9 @@
 
 			$("#dt_antrian tbody").on('click', 'tr .deleteButton', function(e){
 			  e.preventDefault();
-			  var currentRow = $(this).closest("tr");
+			  // var currentRow = $(this).closest("tr");
+			  
+			  var currentRow = $(this).closest('li').length ? $(this).closest('li') : $(this).closest('tr');
 			  var data = $("#dt_antrian").DataTable().row(currentRow).data();
 			  
 			  $('#hapusModal').modal('show');

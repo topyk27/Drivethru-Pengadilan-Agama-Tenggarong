@@ -43,8 +43,8 @@
 								<form role="form" method="post">
 									<div class="card-body">
 										<div class="form-group">
-											<label for="no_perkara">Nomor Perkara ( Contoh : 695/Pdt.G/2020/PA.Tgr )</label>
-											<input type="text" name="no_perkara" class="form-control <?php echo form_error('no_perkara') ? 'is-invalid' : '' ?>" value="<?php if(empty(set_value('no_perkara'))) { echo $data_antrian->no_perkara; } else{ echo set_value('no_perkara');} ?>" placeholder="695/Pdt.G/2020/PA.Tgr" required readonly>
+											<label for="no_perkara">Nomor Perkara ( Contoh : 695/Pdt.G/2020/<?php echo $this->session->userdata('nama_pa_pendek'); ?> )</label>
+											<input type="text" name="no_perkara" class="form-control <?php echo form_error('no_perkara') ? 'is-invalid' : '' ?>" value="<?php if(empty(set_value('no_perkara'))) { echo $data_antrian->no_perkara; } else{ echo set_value('no_perkara');} ?>" placeholder="695/Pdt.G/2020/<?php echo $this->session->userdata('nama_pa_pendek'); ?>" required readonly>
 											<div class="invalid-feedback">
 												<?php echo form_error('no_perkara'); ?>
 											</div>
@@ -83,6 +83,9 @@
 												<input class="form-check-input" type="checkbox" name="pengambilan[]" id="pengambilan_salinan" value="salinan" <?php if($data_antrian->salinan){echo "checked";} ?>>
 												<label class="form-check-label" for="pengambilan_salinan">Salinan Putusan / Penetapan</label>
 											</div>
+											<div class="invalid-feedback" id="feedback_pengambilan">
+												<?php echo form_error('pengambilan[]'); ?>
+											</div>
 										</div>
 										<div class="form-group">
 											<label for="no_ac">Nomor Akta Cerai</label>
@@ -110,7 +113,7 @@
 										</div>
 
 										<div class="form-group">
-											<p class="lead">Untuk persyaratan pengambilan produk Pengadilan Agama Tenggarong, silahkan anda menyiapkan :</p>
+											<p class="lead">Untuk persyaratan pengambilan produk Pengadilan Agama <?php echo $this->session->userdata('nama_pa'); ?>, silahkan anda menyiapkan :</p>
 											<ul class="list-group">
 												<li class="list-group-item d-flex justify-content-between align-items-center">
 													Fotokopi KTP atau SIM
@@ -122,7 +125,7 @@
 
 
 										<div class="form-group">
-											<p class="lead">Biaya pengambilan produk Pengadilan Agama Tenggarong :</p>
+											<p class="lead">Biaya pengambilan produk Pengadilan Agama <?php echo $this->session->userdata('nama_pa'); ?> :</p>
 											<dl class="row">
 												<dt class="col-sm-3">
 													Akta Cerai
@@ -226,6 +229,15 @@
 			$("#responSimbol").text('close');
 			$("#modal_titel").text('Kesalahan');
 			$("#modal_body").text('Ada yang salah, silahkan periksa formulir yang anda isi.');
+			$("#modal_footer").show();
+			$("#modal_footer").text('Periksa');
+			$('#modal').modal('show');
+		}
+		if($("#feedback_pengambilan").children().length >= 1)
+		{
+			$("#responSimbol").text('close');
+			$("#modal_titel").text('Kesalahan');
+			$("#modal_body").html('<?php echo form_error('pengambilan[]'); ?>');
 			$("#modal_footer").show();
 			$("#modal_footer").text('Periksa');
 			$('#modal').modal('show');

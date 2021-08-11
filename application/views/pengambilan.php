@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Drive Thru | PA Tenggarong</title>
+	<title>Drive Thru | PA <?php echo $this->session->userdata('nama_pa'); ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php $this->load->view("_partials/css.php") ?>
 </head>
@@ -23,6 +23,7 @@
 								<li class="breadcrumb-item">
 									<a href="<?php echo base_url(); ?>">Home</a>
 								</li>
+								<li class="breadcrumb-item">Antrian</li>
 								<li class="breadcrumb-item active">Ambil Antrian</li>
 							</ol>
 						</div>
@@ -131,7 +132,7 @@
 										</div>
 
 										<div class="form-group">
-											<p class="lead">Untuk persyaratan pengambilan produk Pengadilan Agama Tenggarong, silahkan anda menyiapkan :</p>
+											<p class="lead">Untuk persyaratan pengambilan produk Pengadilan Agama <?php echo $this->session->userdata('nama_pa'); ?>, silahkan anda menyiapkan :</p>
 											<ul class="list-group">
 												<li class="list-group-item d-flex justify-content-between align-items-center">
 													Fotokopi KTP atau SIM
@@ -142,7 +143,7 @@
 										</div>
 
 										<div class="form-group">
-											<p class="lead">Biaya pengambilan produk Pengadilan Agama Tenggarong :</p>
+											<p class="lead">Biaya pengambilan produk Pengadilan Agama <?php echo $this->session->userdata('nama_pa'); ?> :</p>
 											<dl class="row">
 												<dt class="col-sm-3">
 													Akta Cerai
@@ -241,7 +242,9 @@
 			}
 	?>
 	<script type="text/javascript">
+		var nama_pa_pendek = "<?php echo $this->session->userdata('nama_pa_pendek'); ?>"
 		$(document).ready(function(){
+			$("#sidebar_antrian").addClass("active");
 			$("#sidebar_pengambilan").addClass("active");
 			$("#btn_ambil").hide();
 			$("select[name=jenis_perkara]").on('change', function(){
@@ -253,10 +256,13 @@
 			});
 			var nama_pihak = [];
 			$("#btn_cek_perkara").click(function(){
+				$("#sembunyikan").hide();
+				$("select[name='pihak']").prop("selectedIndex", 0);
 				var no = $("input[name='no_perkara']").val().trim();
 				var tahun = $("input[name='no_perkara_tahun']").val().trim();
 				var jenis_perkara = $("input[name=perkara]").val().trim();
-				var nmr_perkara = no+jenis_perkara+tahun+"/PA.Tgr";
+				var nmr_perkara = no+jenis_perkara+tahun+"/"+nama_pa_pendek;
+				console.log(nmr_perkara);
 				
 				var perkara = jenis_perkara=="/Pdt.G/" ? "gugatan" : "permohonan";
 				$.ajax({

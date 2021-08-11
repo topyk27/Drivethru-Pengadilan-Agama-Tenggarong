@@ -11,3 +11,5 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <!-- cpr -->
 <link rel="stylesheet" type="text/css" href="<?php echo base_url('asset/mine/css/cpr.css') ?>">
+<!-- loader -->
+<link rel="stylesheet" type="text/css" href="<?php echo base_url('asset/mine/css/loader.css') ?>">
