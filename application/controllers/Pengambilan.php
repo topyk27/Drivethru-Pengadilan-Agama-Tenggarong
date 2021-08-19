@@ -18,7 +18,8 @@ class Pengambilan extends CI_Controller
 
 	public function cek_jadwal($jadwal)
 	{
-		$no_perkara = $this->input->post('no_perkara');
+		$post = $this->input->post();
+		$no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun']."/".$this->session->userdata('nama_pa_pendek');
 		$pihak = $this->input->post('pihak');
 		$pengambilan = $this->M_pengambilan;
 		$hari_ini = new DateTime(date("Y-m-d"));
@@ -28,7 +29,7 @@ class Pengambilan extends CI_Controller
 		// if(strtotime($jadwal) > time()+86400) //fix kalo lebih dari 24 jam berarti boleh ambil
 		if(strtotime($jadwal) >= $besok ) // test kalo lebih dari 24 jam berarti boleh ambil
 		{
-			if($pengambilan->cek_udah_ambil($no_perkara,$pihak,$jadwal)) //cek udah ambil antrian hari itu apa belum
+			if($pengambilan->cek_udah_ambil($no_perkara,$pihak,$jadwal)=="belum ambil") //cek udah ambil antrian hari itu apa belum
 			{
 				if($pengambilan->cek_antrian($jadwal) < 10) //kalo antrian kurang dari 10 berarti boleh ambil
 				{
@@ -136,15 +137,7 @@ class Pengambilan extends CI_Controller
 			$respon = $pengambilan->insert();
 			if($respon['success'] == 1)
 			{
-				// print_r("yay");
-				// redirect('pengambilan');
-				// return 1;
-				// $this->session->set_flashdata('respon', 1);
-				// $this->session->set_flashdata('antrian',$respon->antrian);
-				// $this->session->set_flashdata('no_perkara',$respon->no_perkara);
-				// $this->session->set_flashdata('nama',$respon->nama);
-				// $jadwal = $this->tgl_indo($respon->jadwal);
-				// $this->session->set_flashdata('jadwal',$jadwal);
+				
 				$this->session->set_flashdata('respon', 1);
 				$this->session->set_flashdata('antrian', $respon['antrian']);
 				$this->session->set_flashdata('no_perkara', $respon['no_perkara']);

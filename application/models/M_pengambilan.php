@@ -94,7 +94,7 @@ class M_pengambilan extends CI_Model
 		// $this->no_perkara = $post['no_perkara'];
 		// $this->jenis_perkara = $post['jenis_perkara'];
 		// $this->no_perkara_tahun = $post['no_perkara_tahun'];
-		$this->no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun'].$this->session->userdata('nama_pa_pendek');
+		$this->no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun']."/".$this->session->userdata('nama_pa_pendek');
 		$this->pihak = $post['pihak'];
 		$this->nama = $post['nama'];
 		$this->no_hp = $post['no_hp'];
@@ -120,6 +120,7 @@ class M_pengambilan extends CI_Model
 		
 		$this->no_ac = $post['no_ac'];
 		$this->jadwal = $post['jadwal'];
+		
 		$this->antrian = $this->ambil_antrian($this->jadwal);
 		$this->created_at = date('Y-m-d H:i:s');
 		$this->updated_at = date('Y-m-d H:i:s');
@@ -136,6 +137,7 @@ class M_pengambilan extends CI_Model
 		return $respon;
 
 	}
+
 
 	public function cek_antrian($jadwal) //cek jumlah antrian hari itu
 	{
@@ -154,11 +156,11 @@ class M_pengambilan extends CI_Model
 		$query = $this->db->query($statement);
 		if($query->num_rows()>0) //berarti ada isinya gak bisa ambil antrian lagi
 		{
-			return FALSE;
+			return "udah ambil";
 		}
 		else
 		{
-			return TRUE;
+			return "belum ambil";
 		}
 	}
 
