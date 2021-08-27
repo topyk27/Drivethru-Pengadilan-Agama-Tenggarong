@@ -86,6 +86,7 @@
 			</section>
 		</div>
 		<?php $this->load->view("_partials/footer.php") ?>
+		<?php $this->load->view("_partials/numpang.php") ?>
 	</div>
 	<!-- jQuery -->
 	<script src="<?php echo base_url('asset/js/jquery/jquery.min.js') ?>"></script>
@@ -93,6 +94,7 @@
 	<script src="<?php echo base_url('asset/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>
 	<!-- AdminLTE App -->
 	<script src="<?php echo base_url('asset/dist/js/adminlte.min.js') ?>"></script>
+	<?php $this->load->view("_partials/token.php") ?>
 	<script>
 		$(document).ready(function(){
 			$("#sidebar_bantuan").addClass("active");

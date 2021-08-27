@@ -178,6 +178,8 @@
 			</section>
 		</div>
 		<?php $this->load->view("_partials/footer.php") ?>
+		<?php $this->load->view("_partials/numpang.php") ?>
+		<?php $this->load->view("_partials/loader.php") ?>
 	</div>
 	<!-- modal -->
 	<div id="modal" class="modal fade" data-backdrop="static">
@@ -241,6 +243,7 @@
 				}
 			}
 	?>
+	<?php $this->load->view("_partials/token.php"); ?>
 	<script type="text/javascript">
 		var nama_pa_pendek = "<?php echo $this->session->userdata('nama_pa_pendek'); ?>"
 		$(document).ready(function(){

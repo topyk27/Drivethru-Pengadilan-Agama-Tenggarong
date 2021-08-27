@@ -11,8 +11,30 @@ class Pengambilan extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model("M_pengambilan");
+		$this->load->model("M_setting");
 		$this->load->library('form_validation');
 		$this->load->library('session');
+		if(!$this->session->userdata('drivethru_tkn'))
+		{
+			$row = $this->M_setting->ttd();
+			if(isset($row))
+			{
+				$data_pa = array(
+					'drivethru_tkn' => $row->token,
+					'nama_pa' => $row->nama_pa,
+					'nama_pa_pendek' => $row->nama_pa_pendek,
+				);
+			}
+			else
+			{
+				$data_pa = array(
+					'drivethru_tkn' => 'belum',
+					'nama_pa' => 'belum',
+					'nama_pa_pendek' => 'belum',
+				);
+			}
+			$this->session->set_userdata($data_pa);
+		}
 	}
 
 
@@ -155,12 +177,6 @@ class Pengambilan extends CI_Controller
 		}
 		$this->load->view("pengambilan");
 	}
-
-	// public function tambah()
-	// {
-	// 	$pengambilan = $this->M_pengambilan;
-	// 	$pengambilan->cek_antrian("2020-09-23");
-	// }
 
 	public function cetak()
 	{
