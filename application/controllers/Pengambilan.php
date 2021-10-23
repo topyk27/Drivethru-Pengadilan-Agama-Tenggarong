@@ -81,7 +81,7 @@ class Pengambilan extends CI_Controller
 	public function cek_ac_dah_diambil()
 	{
 		$post = $this->input->post();
-		$no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun']."/PA.Tgr";
+		$no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun'].'/'.$this->session->userdata('nama_pa_pendek');
 		$pihak = $post['pihak'];
 		$p = $this->M_pengambilan;
 		$pengambilan;
@@ -97,7 +97,7 @@ class Pengambilan extends CI_Controller
 		// $no_perkara = '695/Pdt.G/2020/PA.Tgr';
 		// $pihak = "penggugat";
 		// $pengambilan = ["ac","salinan"];
-		// print_r($pengambilan);
+		
 		if($pengambilan[0]=="ac")
 		{
 			
@@ -176,6 +176,42 @@ class Pengambilan extends CI_Controller
 			}
 		}
 		$this->load->view("pengambilan");
+	}
+
+	public function quick($no_perkara, $jenis, $tahun, $nama_pa)
+	{
+		$pengambilan = $this->M_pengambilan;
+		$validation = $this->form_validation;
+		$validation->set_rules($pengambilan->rules());
+		if($validation->run())
+		{
+			$respon = $pengambilan->insert();
+			if($respon['success'] == 1)
+			{
+				
+				$this->session->set_flashdata('respon', 1);
+				$this->session->set_flashdata('antrian', $respon['antrian']);
+				$this->session->set_flashdata('no_perkara', $respon['no_perkara']);
+				$this->session->set_flashdata('nama', $respon['nama']);
+				$this->session->set_flashdata('ac', $respon['ac']);
+				$this->session->set_flashdata('salinan', $respon['salinan']);
+				$this->session->set_flashdata('jadwal', $this->tgl_indo($respon['jadwal']));
+			}
+			else
+			{
+				// $this->session->set_flashdata('respon', 0);
+				$this->session->set_flashdata('respon', 0);
+				// return 0;
+			}
+		}
+		$perkara = $pengambilan->quick_get($no_perkara,$jenis,$tahun,$nama_pa);
+		$data['perkara'] = $perkara;
+		$data['no_perkara_full'] = $no_perkara.'/'.$jenis.'/'.$tahun.'/'.$nama_pa;
+		$data['no_perkara'] = $no_perkara;
+		$data['jenis'] = $jenis;
+		$data['tahun'] = $tahun;
+		$data['nama_pa'] = $nama_pa;
+		$this->load->view('pengambilan_quick',$data);
 	}
 
 	public function cetak()

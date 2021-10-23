@@ -175,6 +175,7 @@ class M_pengambilan extends CI_Model
 			$statement = "SELECT p.perkara_id, p.nomor_akta_cerai, p.tgl_penyerahan_akta_cerai_pihak2 AS penyerahan, pe.nomor_perkara FROM perkara_akta_cerai p, perkara pe WHERE pe.perkara_id = p.perkara_id AND pe.nomor_perkara = '$no_perkara'";
 		}
 		$query = $this->db->query($statement);
+		
 		$row=$query->row();
 		if(is_null($row->penyerahan))
 		{
@@ -406,6 +407,52 @@ class M_pengambilan extends CI_Model
 		$statement = "SELECT * FROM pengambilan WHERE MONTH(jadwal)=$bulan AND YEAR(jadwal)=$tahun ORDER BY jadwal ASC ";
 		$query = $this->db->query($statement);
 		return $query->result();
+	}
+
+	public function quick_get($no_perkara,$jenis,$tahun,$nama_pa)
+	{
+		$jenis_perkara = $jenis == 'Pdt.G' ? "gugatan" : "permohonan";
+		$no_perkara_full = $no_perkara.'/'.$jenis.'/'.$tahun.'/'.$nama_pa;
+		if($jenis_perkara=="gugatan")
+		{
+			$statement = "SELECT perkara_id, pihak1_text AS p, pihak2_text AS t, tahapan_terakhir_text AS tahapan FROM perkara where nomor_perkara = '$no_perkara_full' ";
+		}
+		else
+		{
+			$statement = "SELECT perkara_id, pihak1_text AS p, pihak2_text AS t, tahapan_terakhir_text AS tahapan FROM perkara where nomor_perkara = '$no_perkara_full' ";
+		}
+		$query = $this->db->query($statement);
+		$result = $query->result();
+		$row = $query->row();
+		if(!empty($result) && $jenis_perkara=="gugatan") //perkara terdaftar tapi ac nya udah terbit belum
+		{
+			$tahapan = $row->tahapan;
+			$statement1 = "SELECT p.perkara_id, p.pihak1_text AS p, p.pihak2_text AS t, p.tahapan_terakhir_text AS tahapan, ac.nomor_akta_cerai FROM perkara AS p, perkara_akta_cerai AS ac WHERE p.perkara_id = ac.perkara_id AND p.nomor_perkara = '$no_perkara_full' ";
+			$query1 = $this->db->query($statement1);
+			$result1 = $query1->result();
+			if(!empty($result1)) //berarti ac nya terbit
+			{
+				return $result1;
+			}
+			else if($tahapan!="Putusan" && $tahapan!="Akta Cerai") //perkara terdaftar tapi belum putus
+			{
+				return "belum putus";
+			}
+			else //berarti ac nya belum return yg result pertama
+			{
+				return $result;
+			}
+
+		}
+		else if(!empty($result) && $jenis_perkara!="gugatan")
+		{
+			return $result;
+		}
+		else
+		{
+			return "kosong";
+		}
+
 	}
 }
 

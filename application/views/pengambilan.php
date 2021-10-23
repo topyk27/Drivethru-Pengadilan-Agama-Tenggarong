@@ -245,7 +245,7 @@
 	?>
 	<?php $this->load->view("_partials/token.php"); ?>
 	<script type="text/javascript">
-		var nama_pa_pendek = "<?php echo $this->session->userdata('nama_pa_pendek'); ?>"
+		// var nama_pa_pendek = "<?php echo $this->session->userdata('nama_pa_pendek'); ?>";
 		$(document).ready(function(){
 			$("#sidebar_antrian").addClass("active");
 			$("#sidebar_pengambilan").addClass("active");
@@ -341,6 +341,7 @@
 				{
 					$("input[name='nama']").val("");
 					$("#sembunyikan").hide();
+					$("#btn_ambil").hide();
 				}
 			});
 
