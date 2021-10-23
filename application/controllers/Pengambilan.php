@@ -183,6 +183,13 @@ class Pengambilan extends CI_Controller
 		$pengambilan = $this->M_pengambilan;
 		$validation = $this->form_validation;
 		$validation->set_rules($pengambilan->rules());
+		$perkara = $pengambilan->quick_get($no_perkara,$jenis,$tahun,$nama_pa);
+		$data['perkara'] = $perkara;
+		$data['no_perkara_full'] = $no_perkara.'/'.$jenis.'/'.$tahun.'/'.$nama_pa;
+		$data['no_perkara'] = $no_perkara;
+		$data['jenis'] = $jenis;
+		$data['tahun'] = $tahun;
+		$data['nama_pa'] = $nama_pa;
 		if($validation->run())
 		{
 			$respon = $pengambilan->insert();
@@ -196,6 +203,7 @@ class Pengambilan extends CI_Controller
 				$this->session->set_flashdata('ac', $respon['ac']);
 				$this->session->set_flashdata('salinan', $respon['salinan']);
 				$this->session->set_flashdata('jadwal', $this->tgl_indo($respon['jadwal']));
+				redirect('pengambilan/cetak_antrian');
 			}
 			else
 			{
@@ -204,13 +212,6 @@ class Pengambilan extends CI_Controller
 				// return 0;
 			}
 		}
-		$perkara = $pengambilan->quick_get($no_perkara,$jenis,$tahun,$nama_pa);
-		$data['perkara'] = $perkara;
-		$data['no_perkara_full'] = $no_perkara.'/'.$jenis.'/'.$tahun.'/'.$nama_pa;
-		$data['no_perkara'] = $no_perkara;
-		$data['jenis'] = $jenis;
-		$data['tahun'] = $tahun;
-		$data['nama_pa'] = $nama_pa;
 		$this->load->view('pengambilan_quick',$data);
 	}
 

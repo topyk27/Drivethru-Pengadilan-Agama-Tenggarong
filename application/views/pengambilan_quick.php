@@ -212,6 +212,7 @@
             $("#sidebar_pengambilan").addClass("active");
             $("#btn_ambil").hide();
             $("#row_pihak").hide();
+            $("select[name='pihak']").prop("selectedIndex",0);
             var nama_pihak = [];
             $("#sembunyikan").hide();
             var nmr_perkara = "<?php echo $no_perkara_full; ?>";
@@ -226,8 +227,7 @@
                 },
                 dataType: 'json',
                 success: function(data) {
-                    console.log(data);
-                    console.log(perkara);
+                    
                     if (data == "kosong") {
                         alert("Nomor perkara tidak ditemukan, silahkan periksa kembali nomor perkara anda");
                     } else if (data == "belum putus") {
