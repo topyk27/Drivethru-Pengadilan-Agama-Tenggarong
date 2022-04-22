@@ -178,7 +178,7 @@ class Pengambilan extends CI_Controller
 		$this->load->view("pengambilan");
 	}
 
-	public function quick($no_perkara, $jenis, $tahun, $nama_pa)
+	public function quick($pihak,$no_perkara, $jenis, $tahun, $nama_pa)
 	{
 		$pengambilan = $this->M_pengambilan;
 		$validation = $this->form_validation;
@@ -186,6 +186,7 @@ class Pengambilan extends CI_Controller
 		$perkara = $pengambilan->quick_get($no_perkara,$jenis,$tahun,$nama_pa);
 		$data['perkara'] = $perkara;
 		$data['no_perkara_full'] = $no_perkara.'/'.$jenis.'/'.$tahun.'/'.$nama_pa;
+		$data['pihak'] = $pihak;
 		$data['no_perkara'] = $no_perkara;
 		$data['jenis'] = $jenis;
 		$data['tahun'] = $tahun;

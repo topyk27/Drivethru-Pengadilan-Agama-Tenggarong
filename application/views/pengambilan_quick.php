@@ -218,6 +218,7 @@
             var nmr_perkara = "<?php echo $no_perkara_full; ?>";
             var jenis = "<?php echo $jenis; ?>";
             var perkara = jenis == "Pdt.G" ? "gugatan" : "permohonan";
+            var pihak = "<?php echo $pihak; ?>";
             $.ajax({
                 url: "<?php echo base_url('pengambilan/cek_data_perkara'); ?>",
                 method: "POST",
@@ -243,7 +244,7 @@
                             $("#text_ac_belum_terbit").hide();
                             $("input[name='no_ac']").val(data[0]["nomor_akta_cerai"]);
                         }
-
+                        console.log(perkara);
                         if (perkara == "gugatan") {
                             $("select[name=pihak] option[value=penggugat]").text("Penggugat");
                             $("select[name=pihak] option[value=tergugat]").text("Tergugat");
@@ -251,6 +252,16 @@
                             $("select[name=pihak] option[value=penggugat]").text("Pemohon");
                             $("select[name=pihak] option[value=tergugat]").text("Termohon");
                         }
+                    }
+                    if(pihak=="p")
+                    {
+                        $("select[name='pihak']").val("penggugat").change();
+                        $("select[name='pihak']").attr("style", "pointer-events: none;");
+                    }
+                    else
+                    {
+                        $("select[name='pihak']").val("tergugat").change();
+                        $("select[name='pihak']").attr("style", "pointer-events: none;");
                     }
                 }
             });
