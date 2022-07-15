@@ -289,7 +289,8 @@ class M_pengambilan extends CI_Model
 	{
 		$now = date('Y-m-d');
 		$bulan = date('n');
-		$statement = "SELECT COUNT(id) as total, DATE_FORMAT(jadwal,'%e') AS tanggal FROM pengambilan WHERE MONTH(jadwal) = $bulan GROUP BY jadwal";
+		$tahun = date('Y');
+		$statement = "SELECT COUNT(id) as total, DATE_FORMAT(jadwal,'%e') AS tanggal FROM pengambilan WHERE YEAR(jadwal) = $tahun AND MONTH(jadwal) = $bulan GROUP BY jadwal";
 		$query = $this->db->query($statement);
 		$result = $query->result();
 		return $result;
@@ -453,6 +454,74 @@ class M_pengambilan extends CI_Model
 			return "kosong";
 		}
 
+	}
+
+	public function get_blacklist($no_perkara,$pihak)
+	{
+		$statement = "SELECT alasan FROM blacklist WHERE no_perkara = '$no_perkara' AND pihak = '$pihak' ";
+		$query = $this->db->query($statement);
+		$result = $query->result();
+		$row = $query->row();
+		$respon = [];
+		if(!empty($result))
+		{
+			$respon['alasan'] = $row->alasan;
+			$respon['success'] = false;
+		}
+		else
+		{
+			$respon['success'] = true;
+		}
+		return $respon;
+	}
+
+	public function get_hari_libur($tanggal_pengambilan)
+	{
+		$weekend = $this->isWeekend($tanggal_pengambilan);
+		if($weekend == "kerja")
+		{
+			$statement = "SELECT nama FROM libur WHERE tanggal='$tanggal_pengambilan'";
+			$query = $this->db->query($statement);
+			$result = $query->result();
+			$row = $query->row();
+			$respon = [];
+			if(!empty($result))
+			{
+				$respon['alasan'] = "Libur" .$row->nama;
+				$respon['success'] = false;
+			}
+			else
+			{
+				$respon['success'] = true;
+			}
+			return $respon;
+		}
+		else
+		{
+			$respon['alasan'] = "Hari ". $weekend . " libur";
+			$respon['success'] = false;
+			return $respon;
+		}
+	}
+
+	public function isWeekend($tanggal)
+	{
+		$weekend = date('N', strtotime($tanggal));
+		if($weekend > 5)
+		{
+			if($weekend == 6)
+			{
+				return "Sabtu";
+			}
+			else
+			{
+				return "Minggu";
+			}
+		}
+		else
+		{
+			return "kerja";
+		}
 	}
 }
 

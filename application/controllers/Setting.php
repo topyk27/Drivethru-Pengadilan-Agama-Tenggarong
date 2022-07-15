@@ -63,6 +63,58 @@ class Setting extends CI_Controller
 
 	}
 
+	public function blacklist()
+	{
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		$this->load->view("setting/blacklist");
+	}
+
+	public function data_blacklist()
+	{
+		$data = $this->M_setting->get_blacklist();
+		echo json_encode($data);
+	}
+
+	public function blacklist_ubah($id)
+	{
+		if(!isset($id))
+		{
+			redirect('setting/blacklist');
+		}
+		else
+		{
+			$setting = $this->M_setting;
+			$validation = $this->form_validation;
+			$validation->set_rules($setting->blacklist_ubah_rules());
+			if($validation->run())
+			{
+				$respon = $setting->blacklist_ubah($id);
+				if($respon == 1)
+				{
+					$this->session->set_flashdata('success', 'Data berhasil diubah');
+				}
+				else
+				{
+					$this->session->set_flashdata('success', 'Data gagal diubah');
+				}
+				redirect('setting/blacklist');
+			}
+			$data['data_blacklist'] = $setting->get_blacklistById($id);
+			if(!$data['data_blacklist'])
+			{
+				$this->session->set_flashdata('success', 'Data yang anda cari tidak ada');
+				redirect('setting/blacklist');
+			}
+			else
+			{
+				$this->load->view('setting/blacklist_ubah',$data);
+			}
+		}
+	}
+
 	public function validate_image()
 	{
 		$check = TRUE;

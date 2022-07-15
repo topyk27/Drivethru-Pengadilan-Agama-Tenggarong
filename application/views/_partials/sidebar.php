@@ -59,11 +59,31 @@
 				<p>Laporan</p>
 			</a>
 		</li>
-		<li class="nav-item">
-			<a href="<?php echo base_url('setting/sistem') ?>" class="nav-link" id="sidebar_setting">
+		<li class="nav-item has-treeview">
+			<a href="#" class="nav-link" id="sidebar_setting">
 				<i class="nav-icon fas fa-cog"></i>
-				<p>Pengaturan</p>
+				<p>Pengaturan <i class="fas fa-angle-left right"></i></p>
 			</a>
+			<ul class="nav nav-treeview">
+				<li class="nav-item">
+					<a href="<?php echo base_url('setting/sistem') ?>" class="nav-link" id="sidebar_setting_sistem">
+						<i class="nav-icon fas fa-rocket"></i>
+						<p>Sistem</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="<?php echo base_url('setting/blacklist') ?>" class="nav-link" id="sidebar_setting_blacklist">
+						<i class="nav-icon fas fa-ban"></i>
+						<p>Blacklist</p>
+					</a>
+				</li>
+				<li class="nav-item">
+					<a href="<?php echo base_url('setting/libur') ?>" class="nav-link" id="sidebar_setting_libur">
+						<i class="nav-icon fas fa-mug-hot"></i>
+						<p>Libur</p>
+					</a>
+				</li>
+			</ul>
 		</li>
 		<li class="nav-item">
 			<a href="#" class="nav-link" id="sidebar_logout" onclick="modal_logout()">

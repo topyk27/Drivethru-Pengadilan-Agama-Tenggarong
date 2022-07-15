@@ -43,16 +43,27 @@
 		<li class="nav-item d-none d-sm-inline-block">
 			<a href="<?php echo base_url('laporan/pengambilan') ?>" class="nav-link">Laporan</a>
 		</li>
-		<li class="nav-item d-none d-sm-inline-block">
-			<a href="<?php echo base_url('setting/sistem') ?>" class="nav-link">Pengaturan</a>
+		<li class="nav-item dropdown">
+			<a href="#" id="dropdownSubMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Pengaturan</a>
+			<ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+				<li>
+					<a href="<?php echo base_url('setting/sistem'); ?>" class="dropdown-item">Sistem</a>
+				</li>
+				<li>
+					<a href="<?php echo base_url('setting/blacklist'); ?>" class="dropdown-item">Blacklist</a>
+				</li>
+				<li>
+					<a href="<?php echo base_url('setting/libur'); ?>" class="dropdown-item">Libur</a>
+				</li>
+			</ul>
 		</li>
 	<?php endif; ?>
 	</ul>
 <?php if($this->session->userdata('drivethru_login')): ?>
 	<ul class="navbar-nav ml-auto">
-		<li class="nav-item dropdown">
-			<a href="#" id="btn-logout" class="nav-link" data-toggle="dropdown" aria-expanded="false">
-				<span class="nav-link"><?php echo $this->session->userdata('drivethru_nama'); ?> <i class="fas fa-sign-out-alt"></i></span>
+		<li class="nav-item d-none d-sm-inline-block">
+			<a href="#" id="btn-logout" class="nav-link">
+				<span><?php echo $this->session->userdata('drivethru_nama'); ?> <i class="fas fa-sign-out-alt"></i></span>
 			</a>
 		</li>
 	</ul>

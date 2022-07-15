@@ -22,6 +22,41 @@ class M_setting extends CI_Model
 		];
 	}
 
+	public function blacklist_rules()
+	{
+		return [
+			[
+				'field' => 'no_perkara',
+				'label' => 'no_perkara',
+				'rules' => 'callback_cek_perkara_exist'
+			],
+			[
+				'field' => 'pihak',
+				'label' => 'label',
+				'rules' => 'required',
+			],
+			[
+				'field' => 'alasan',
+				'label' => 'alasan',
+				'rules' => 'required',
+			]
+		];
+	}
+
+	public function blacklist_ubah_rules()
+	{
+		return [
+			[
+				'field' => 'alasan',
+				'label' => 'alasan',
+				'rules' => 'required',
+				'errors' => [
+					'required' => 'Mohon diisi alasannya dan jangan mengada-ada',
+				],
+			]
+		];
+	}
+
 	public function getAll()
 	{
 		$this->db->from($this->table);
@@ -118,5 +153,27 @@ class M_setting extends CI_Model
 			return FALSE;
 		}
 	}
+
+	public function get_blacklist()
+	{
+		$statement = "SELECT * FROM blacklist ORDER BY diperbarui DESC";
+		$query = $this->db->query($statement);
+		return $query->result();
+	}
+
+	public function get_blacklistById($id)
+	{
+		return $this->db->get_where("blacklist", ["id" => $id])->row();
+	}
+
+	public function blacklist_ubah($id)
+	{
+		$post = $this->input->post();
+		$alasan = $post['alasan'];
+		$this->db->set('alasan',$alasan);
+		$this->db->update('blacklist');
+		return $this->db->affected_rows();
+	}
+	
 }
  ?>

@@ -44,37 +44,54 @@ class Pengambilan extends CI_Controller
 		$no_perkara = $post['no_perkara'].$post['jenis_perkara'].$post['no_perkara_tahun']."/".$this->session->userdata('nama_pa_pendek');
 		$pihak = $this->input->post('pihak');
 		$pengambilan = $this->M_pengambilan;
-		$hari_ini = new DateTime(date("Y-m-d"));
-		$hari_ini->modify('+1 day');
-		$besok = $hari_ini->getTimestamp();
-
-		// if(strtotime($jadwal) > time()+86400) //fix kalo lebih dari 24 jam berarti boleh ambil
-		if(strtotime($jadwal) >= $besok ) // test kalo lebih dari 24 jam berarti boleh ambil
+		$blacklist = $pengambilan->get_blacklist($no_perkara,$pihak);
+		if($blacklist['success'] == false)
 		{
-			if($pengambilan->cek_udah_ambil($no_perkara,$pihak,$jadwal)=="belum ambil") //cek udah ambil antrian hari itu apa belum
-			{
-				if($pengambilan->cek_antrian($jadwal) < 10) //kalo antrian kurang dari 10 berarti boleh ambil
-				{
-					return TRUE;
-				}
-				else
-				{
-					$this->form_validation->set_message('cek_jadwal', 'Antrian sudah penuh, silahkan pilih hari yang lain.');
-					return FALSE;
-				}
-			}
-			else
-			{
-				$this->form_validation->set_message('cek_jadwal', 'Anda sudah mengambil antrian pada hari itu. Silahkan pilih menu cetak antrian.');
-				return FALSE;
-			}
+			$this->form_validation->set_message('cek_jadwal', $blacklist['alasan']);
+			return FALSE;
 		}
 		else
 		{
-			$this->form_validation->set_message('cek_jadwal', 'Pengambilan antrian tidak bisa dilakukan apabila kurang dari 1 hari. Silahkan pilih besok lusa.');
-			// $this->session->set_flashdata('respon', 0);
-			// print_r("nay");
-			return FALSE;
+			$hari_ini = new DateTime(date("Y-m-d"));
+			$hari_ini->modify('+1 day');
+			$besok = $hari_ini->getTimestamp();
+			$isLibur = $pengambilan->get_hari_libur($jadwal);
+			if($isLibur['success'] == false)
+			{
+				$this->form_validation->set_message('cek_jadwal', $isLibur['alasan']);
+				return FALSE;
+			}
+			else
+			{
+				// if(strtotime($jadwal) > time()+86400) //fix kalo lebih dari 24 jam berarti boleh ambil
+				if(strtotime($jadwal) >= $besok ) // test kalo lebih dari 24 jam berarti boleh ambil
+				{
+					if($pengambilan->cek_udah_ambil($no_perkara,$pihak,$jadwal)=="belum ambil") //cek udah ambil antrian hari itu apa belum
+					{
+						if($pengambilan->cek_antrian($jadwal) < 10) //kalo antrian kurang dari 10 berarti boleh ambil
+						{
+							return TRUE;
+						}
+						else
+						{
+							$this->form_validation->set_message('cek_jadwal', 'Antrian sudah penuh, silahkan pilih hari yang lain.');
+							return FALSE;
+						}
+					}
+					else
+					{
+						$this->form_validation->set_message('cek_jadwal', 'Anda sudah mengambil antrian pada hari itu. Silahkan pilih menu cetak antrian.');
+						return FALSE;
+					}
+				}
+				else
+				{
+					$this->form_validation->set_message('cek_jadwal', 'Pengambilan antrian tidak bisa dilakukan apabila kurang dari 1 hari. Silahkan pilih besok lusa.');
+					// $this->session->set_flashdata('respon', 0);
+					// print_r("nay");
+					return FALSE;
+				}
+			}
 		}
 	}
 
