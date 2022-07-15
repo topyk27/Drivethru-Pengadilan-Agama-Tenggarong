@@ -26,19 +26,42 @@ class M_setting extends CI_Model
 	{
 		return [
 			[
+				'field' => 'jenis_perkara',
+				'label' => 'jenis_perkara',
+				'rules' => 'required'
+			],
+			[
+				'field' => 'no_urut',
+				'label' => 'no_urut',
+				'rules' => 'required'
+			],
+			[
+				'field' => 'no_perkara_tahun',
+				'label' => 'no_perkara_tahun',
+				'rules' => 'required'
+			],
+			[
 				'field' => 'no_perkara',
 				'label' => 'no_perkara',
-				'rules' => 'callback_cek_perkara_exist'
+				'rules' => 'required'
 			],
 			[
 				'field' => 'pihak',
-				'label' => 'label',
+				'label' => 'pihak',
+				'rules' => 'required',
+			],
+			[
+				'field' => 'nama',
+				'label' => 'nama',
 				'rules' => 'required',
 			],
 			[
 				'field' => 'alasan',
 				'label' => 'alasan',
 				'rules' => 'required',
+				'errors' => [
+					'required' => 'Mohon diisi alasannya dan jangan mengada-ada',
+				],
 			]
 		];
 	}
@@ -166,12 +189,42 @@ class M_setting extends CI_Model
 		return $this->db->get_where("blacklist", ["id" => $id])->row();
 	}
 
+	public function blacklist_tambah()
+	{
+		$post = $this->input->post();
+		$this->db->where('no_perkara',$post['no_perkara']);
+		$this->db->where('pihak',$post['pihak']);
+		$query = $this->db->get('blacklist');
+		$count_row = $query->num_rows();
+		if($count_row > 0)
+		{
+			return 0;
+		}
+		else
+		{
+			$data = array(
+				'no_perkara' => $post['no_perkara'],
+				'nama' => $post['nama'],
+				'pihak' => $post['pihak'],
+				'alasan' => $post['alasan'],
+			);
+			$this->db->insert("blacklist",$data);
+			return $this->db->affected_rows();
+		}
+	}
+
 	public function blacklist_ubah($id)
 	{
 		$post = $this->input->post();
 		$alasan = $post['alasan'];
 		$this->db->set('alasan',$alasan);
 		$this->db->update('blacklist');
+		return $this->db->affected_rows();
+	}
+
+	public function blacklist_hapus($id)
+	{
+		return $this->db->delete('blacklist', ["id" => $id]);
 		return $this->db->affected_rows();
 	}
 	

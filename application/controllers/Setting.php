@@ -78,6 +78,28 @@ class Setting extends CI_Controller
 		echo json_encode($data);
 	}
 
+	public function blacklist_tambah()
+	{
+		$setting = $this->M_setting;
+		$validation = $this->form_validation;
+		$validation->set_rules($setting->blacklist_rules());
+		if($validation->run())
+		{
+			$respon = $setting->blacklist_tambah();
+			if($respon == 1)
+			{
+				$this->session->set_flashdata('success', 'Data berhasil disimpan');
+				redirect('setting/blacklist');
+			}
+			else
+			{
+				$this->session->set_flashdata('success', 'Gagal menyimpan data');
+				redirect('setting/blacklist');
+			}
+		}
+		$this->load->view('setting/blacklist_tambah');
+	}
+
 	public function blacklist_ubah($id)
 	{
 		if(!isset($id))
@@ -112,6 +134,18 @@ class Setting extends CI_Controller
 			{
 				$this->load->view('setting/blacklist_ubah',$data);
 			}
+		}
+	}
+
+	public function blacklist_hapus($id)
+	{
+		if($this->M_setting->blacklist_hapus($id) == 1)
+		{
+			echo "1";
+		}
+		else
+		{
+			echo "0";
 		}
 	}
 

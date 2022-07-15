@@ -16,7 +16,7 @@
 				<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-sm-6">
-							<h1>Sistem</h1>
+							<h1>Blacklist</h1>
 						</div>
 						<div class="col-sm-6">
 							<ol class="breadcrumb float-sm-right">
@@ -24,6 +24,13 @@
 								<li class="breadcrumb-item"><a href="#">Pengaturan</a></li>
 								<li class="breadcrumb-item active">Blacklist</li>
 							</ol>
+						</div>
+					</div>
+					<div class="row mb-2">
+						<div class="col-sm-2">
+							<a href="<?php echo base_url('setting/blacklist_tambah'); ?>" class="btn btn-block bg-gradient-primary">
+							<i class="fas fa-plus"></i> Tambah
+						</a>
 						</div>
 					</div>
 					<div class="row mb-2">
@@ -37,7 +44,7 @@
 						<div class="col-md-12">
 							<div class="card card-primary">
 								<div class="card-header">
-									<h3 class="card-title">Blacklist</h3>
+									<h3 class="card-title">Data Blacklist</h3>
 								</div>
 								<div class="card-body">
                                     <table id="dt_blacklist" class="table table-bordered table-hover">
@@ -46,8 +53,10 @@
                                                 <th></th>
                                                 <th>#</th>
                                                 <th>NO. Perkara</th>
+                                                <th>Nama</th>
                                                 <th>Pihak</th>
                                                 <th>Alasan</th>
+                                                <th>Diperbarui</th>
                                                 <th>Ubah</th>
                                                 <th>Hapus</th>
                                             </tr>
@@ -100,6 +109,27 @@
     <script>const base_url = "<?php echo base_url(); ?>";</script>
 	<script type="text/javascript">
         var dt_blacklist;
+		function hapusData(id)
+		{
+			$.ajax({
+				url: base_url+'setting/blacklist_hapus/'+id,
+				dataType: "text",
+				success: function(respon)
+				{
+					if(respon="1")
+					{
+						dt_blacklist.ajax.reload();
+						$("#respon").html("<div class='alert alert-success' role='alert' id='responMsg'><strong>Selamat</strong> Data berhasil dihapus</div>")
+						$("#responMsg").hide().fadeIn(200).delay(2000).fadeOut(1000, function(){$(this).remove();});
+					}
+					else
+					{
+						$("#respon").html("<div class='alert alert-warning' role='alert' id='responMsg'><strong>Maaf</strong> Data gagal dihapus. Silahkan coba lagi.</div>")
+						$("#responMsg").hide().fadeIn(200).delay(2000).fadeOut(1000, function(){$(this).remove();});
+					}
+				}
+			});
+		}
 		$(document).ready(function(){
 			$("#sidebar_setting").addClass("active");
 			$("#sidebar_setting_blacklist").addClass("active");
@@ -108,35 +138,50 @@
                 ajax : {
                     url : base_url+'setting/data_blacklist',
                     dataSrc : "",
-                },
+                },				
 				columns : [
 					{data:"id"},
 					{data : null, sortable: false, render: function(data,type,row,meta){
 					return meta.row + meta.settings._iDisplayStart + 1;
 					}},
 					{data : "no_perkara"},
+					{data : "nama"},
 					{data : "pihak"},
 					{data : "alasan"},
+					{data : "diperbarui"},
 					{data : null, sortable: false, render:function(data,type,row,meta){
 						return "<a href='"+base_url+"setting/blacklist_ubah/"+row['id']+"' class='btn btn-warning'><i class='fas fa-edit'></i> Ubah</a>";
 					}},
 					{data : null, sortable: false, render: function(data,type,row,meta){
-						return "<a href='"+base_url+"setting/blacklist_hapus/"+row['id']+"' class='btn btn-danger'><i class='fas fa-trash'></i> Hapus</a>";
+						return "<a href='#' class='btn btn-danger deleteButton'><i class='fas fa-trash'></i> Hapus</a>";
 					}},
 				],
+				order: [[6,'desc']],
 				columnDefs : [
 					{
-						targets: [0],
+						targets: [0,6],
 						visible: false,
 					},
 					{
-						targets: [1,3,5,6],
+						targets: [1,4,6,7],
 						searchable : false,
 					}
 				],
 				responsive : true,
 				autoWidth : false
             });
+			$("#dt_blacklist tbody").on('click','tr .deleteButton', function(e){
+				e.preventDefault();
+				var currentRow = $(this).closest('li').length ? $(this).closest('li') : $(this).closest('tr');
+				var data = $("#dt_blacklist").DataTable().row(currentRow).data();
+				$('#hapusModal').modal('show');
+				$('#hapusModal').find('.modal-body').html("<p>Apakah anda ingin menghapus data "+data['nama']+"? Data ini tidak bisa dipulihkan kembali.");
+				$('#hapusModal').find('#deleteButton').attr("onclick", "hapusData("+data['id']+")");
+			});
+			<?php if($this->session->userdata('success')) : $respon = $this->session->userdata('success'); ?>
+			$("#respon").html("<div class='alert alert-success' role='alert' id='responMsg'><?php echo $respon; ?></div>")
+			$("#responMsg").hide().fadeIn(200).delay(2000).fadeOut(1000, function(){$(this).remove();});
+			<?php endif; ?>
 		});
 	</script>
 </body>

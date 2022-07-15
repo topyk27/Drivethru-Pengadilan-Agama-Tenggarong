@@ -1,8 +1,11 @@
 # Changelog
 
 ## [Unreleased]
-- Create, Update, Delete Blacklist
 - CRUD Hari Libur
+
+## [1.4.3] - 2022-07-15
+### [Add]
+- Create, Update, Delete Blacklist
 
 ## [1.4.2] - 2022-07-15
 ### [Add]

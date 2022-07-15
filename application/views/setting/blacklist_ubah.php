@@ -16,13 +16,14 @@
 				<div class="container-fluid">
 					<div class="row mb-2">
 						<div class="col-sm-6">
-							<h1>Sistem</h1>
+							<h1>Blacklist</h1>
 						</div>
 						<div class="col-sm-6">
 							<ol class="breadcrumb float-sm-right">
 								<li class="breadcrumb-item"><a href="<?php echo base_url(); ?>">Home</a></li>
 								<li class="breadcrumb-item"><a href="#">Pengaturan</a></li>
-								<li class="breadcrumb-item active">Blacklist</li>
+								<li class="breadcrumb-item"><a href="<?php echo base_url('setting/blacklist'); ?>">Blacklist</a></li>
+								<li class="breadcrumb-item active">Ubah</li>
 							</ol>
 						</div>
 					</div>
@@ -37,7 +38,7 @@
 						<div class="col-md-12">
 							<div class="card card-primary">
 								<div class="card-header">
-									<h3 class="card-title">Ubah Data Blacklist</h3>
+									<h3 class="card-title">Ubah Data</h3>
 								</div>
                                 <form role="form" method="POST">
                                     <div class="card-body">

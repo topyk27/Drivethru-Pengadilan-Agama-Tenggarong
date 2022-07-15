@@ -49,7 +49,7 @@
 											</select>
 										</div>
 
-										<div class="form-row">
+										<div class="form-row" id="row_perkara">
 											<div class="col-md-5">
 												<label for="no_perkara">Nomor Perkara</label>
 												<input type="text" class="form-control <?php echo form_error('no_perkara') ? 'is-invalid' : '' ?>" name="no_perkara" value="<?php echo set_value('no_perkara'); ?>" placeholder="1262" required="" id="no_perkara">
@@ -250,7 +250,9 @@
 			$("#sidebar_antrian").addClass("active");
 			$("#sidebar_pengambilan").addClass("active");
 			$("#btn_ambil").hide();
+			$("#row_perkara").hide();
 			$("select[name=jenis_perkara]").on('change', function(){
+				$("#row_perkara").show();
 				$("input[name=perkara]").val(this.value);
 				$("#sembunyikan").hide();
 				$("#row_pihak").hide();
@@ -355,11 +357,20 @@
 				$("#modal_footer").text('Periksa');
 				$("#modal_footer_cetak").hide();
 				$('#modal').modal('show');
+				$("#row_perkara").show();
 				$("#sembunyikan").show();
 				$("#row_pihak").show();
 				$("#btn_ambil").show();
 				$("#btn_cek_perkara").trigger('click');
 			}
+			$("#no_perkara").on('input', function(){
+				$("#row_pihak").hide();
+				$("#sembunyikan").hide();
+			});
+			$("input[name='no_perkara_tahun']").on('input', function(){
+				$("#row_pihak").hide();
+				$("#sembunyikan").hide();
+			});
 		});
 	</script>
 
