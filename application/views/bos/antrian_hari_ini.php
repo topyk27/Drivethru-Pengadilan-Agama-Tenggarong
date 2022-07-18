@@ -119,7 +119,7 @@
 		      dataType: "text",
 		      success: function(respon)
 		      {
-		        if(respon="1")
+		        if(respon=="1")
 		        {
 		          console.log("berhasil");
 		          dt_antrian.ajax.reload();

@@ -1,7 +1,14 @@
 # Changelog
 
 ## [Unreleased]
-- CRUD Hari Libur
+
+## [1.5.0] - 2022-07-18
+### [Add]
+- CRUD hari libur
+
+### [Changed]
+- Fix akses menu setting
+- Fix respon hapus item
 
 ## [1.4.3] - 2022-07-15
 ### [Add]

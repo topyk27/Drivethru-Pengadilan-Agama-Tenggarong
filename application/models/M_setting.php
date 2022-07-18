@@ -80,6 +80,25 @@ class M_setting extends CI_Model
 		];
 	}
 
+	public function libur_rules()
+	{
+		return [
+			[
+				'field' => 'tanggal',
+				'label' => 'tanggal',
+				'rules' => 'required'				
+			],
+			[
+				'field' => 'libur',
+				'label' => 'libur',
+				'rules' => 'required',
+				'errors' => [
+					'required' => 'Mohon diisi hari libur apa dan jangan mengada-ada',
+				],
+			]
+		];
+	}
+
 	public function getAll()
 	{
 		$this->db->from($this->table);
@@ -218,13 +237,67 @@ class M_setting extends CI_Model
 		$post = $this->input->post();
 		$alasan = $post['alasan'];
 		$this->db->set('alasan',$alasan);
+		$this->db->where('id',$id);
 		$this->db->update('blacklist');
 		return $this->db->affected_rows();
 	}
 
 	public function blacklist_hapus($id)
 	{
-		return $this->db->delete('blacklist', ["id" => $id]);
+		$this->db->delete('blacklist', ["id" => $id]);
+		return $this->db->affected_rows();
+	}
+
+	public function get_libur()
+	{
+		$statement = "SELECT * FROM libur ORDER BY tanggal DESC";
+		$query = $this->db->query($statement);
+		return $query->result();
+	}
+
+	public function get_liburById($id)
+	{
+		return $this->db->get_where("libur", ["id" => $id])->row();
+	}
+
+	public function libur_tambah()
+	{
+		$post = $this->input->post();
+		$tanggal = $post['tanggal'];
+		$nama = $post['libur'];
+		$this->db->where('tanggal',$tanggal);		
+		$query = $this->db->get('libur');
+		$count_row = $query->num_rows();
+		if($count_row > 0)
+		{
+			return 0;
+		}
+		else
+		{
+			$data = array(
+				'tanggal' => $tanggal,
+				'nama' => $nama,				
+			);
+			$this->db->insert("libur",$data);
+			return $this->db->affected_rows();
+		}
+	}
+
+	public function libur_ubah($id)
+	{
+		$post = $this->input->post();
+		$tanggal = $post['tanggal'];
+		$nama = $post['libur'];
+		$this->db->set('tanggal',$tanggal);
+		$this->db->set('nama',$nama);
+		$this->db->where('id',$id);
+		$this->db->update('libur');
+		return $this->db->affected_rows();
+	}
+
+	public function libur_hapus($id)
+	{
+		$this->db->delete('libur', ["id" => $id]);
 		return $this->db->affected_rows();
 	}
 	

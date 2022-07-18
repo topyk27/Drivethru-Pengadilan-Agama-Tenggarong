@@ -24,7 +24,14 @@ class Setting extends CI_Controller
 
 	public function savetoken()
 	{
-		echo $this->M_setting->savetoken();
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{
+			echo $this->M_setting->savetoken();
+		}
 	}
 
 	public function sistem()
@@ -33,33 +40,50 @@ class Setting extends CI_Controller
 		{
 			redirect('login');
 		}
-		$setting = $this->M_setting;
-		$validation = $this->form_validation;
-		$validation->set_rules($setting->logo_rules());
-		if($validation->run())
+		else
 		{
-			$respon = $setting->logo_upload();
-			if($respon)
+			$setting = $this->M_setting;
+			$validation = $this->form_validation;
+			$validation->set_rules($setting->logo_rules());
+			if($validation->run())
 			{
-				redirect('setting/sistem');
+				$respon = $setting->logo_upload();
+				if($respon)
+				{
+					redirect('setting/sistem');
+				}
 			}
+	
+			$data['ttd'] = $this->M_setting->getAll();
+			$data['hakim'] = $this->M_setting->list_hakim();
+			$data['panitera'] = $this->M_setting->list_panitera();
+			$this->load->view("setting/sistem",$data);
 		}
-
-		$data['ttd'] = $this->M_setting->getAll();
-		$data['hakim'] = $this->M_setting->list_hakim();
-		$data['panitera'] = $this->M_setting->list_panitera();
-		$this->load->view("setting/sistem",$data);
 	}
 
 	public function ketua_save()
 	{
-		echo json_encode($this->M_setting->ketua_save());
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{
+			echo json_encode($this->M_setting->ketua_save());
+		}
 
 	}
 
 	public function panitera_save()
 	{
-		echo json_encode($this->M_setting->panitera_save());
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{
+			echo json_encode($this->M_setting->panitera_save());
+		}
 
 	}
 
@@ -69,83 +93,231 @@ class Setting extends CI_Controller
 		{
 			redirect('login');
 		}
-		$this->load->view("setting/blacklist");
+		else
+		{
+			$this->load->view("setting/blacklist");
+		}
 	}
 
 	public function data_blacklist()
 	{
-		$data = $this->M_setting->get_blacklist();
-		echo json_encode($data);
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{
+			$data = $this->M_setting->get_blacklist();
+			echo json_encode($data);
+		}
 	}
 
 	public function blacklist_tambah()
 	{
-		$setting = $this->M_setting;
-		$validation = $this->form_validation;
-		$validation->set_rules($setting->blacklist_rules());
-		if($validation->run())
+		if(!$this->M_bos->isLogin())
 		{
-			$respon = $setting->blacklist_tambah();
-			if($respon == 1)
-			{
-				$this->session->set_flashdata('success', 'Data berhasil disimpan');
-				redirect('setting/blacklist');
-			}
-			else
-			{
-				$this->session->set_flashdata('success', 'Gagal menyimpan data');
-				redirect('setting/blacklist');
-			}
-		}
-		$this->load->view('setting/blacklist_tambah');
-	}
-
-	public function blacklist_ubah($id)
-	{
-		if(!isset($id))
-		{
-			redirect('setting/blacklist');
+			redirect('login');
 		}
 		else
 		{
 			$setting = $this->M_setting;
 			$validation = $this->form_validation;
-			$validation->set_rules($setting->blacklist_ubah_rules());
+			$validation->set_rules($setting->blacklist_rules());
 			if($validation->run())
 			{
-				$respon = $setting->blacklist_ubah($id);
+				$respon = $setting->blacklist_tambah();
 				if($respon == 1)
 				{
-					$this->session->set_flashdata('success', 'Data berhasil diubah');
+					$this->session->set_flashdata('success', 'Data berhasil disimpan');
+					redirect('setting/blacklist');
 				}
 				else
 				{
-					$this->session->set_flashdata('success', 'Data gagal diubah');
+					$this->session->set_flashdata('success', 'Gagal menyimpan data');
+					redirect('setting/blacklist');
 				}
-				redirect('setting/blacklist');
 			}
-			$data['data_blacklist'] = $setting->get_blacklistById($id);
-			if(!$data['data_blacklist'])
+			$this->load->view('setting/blacklist_tambah');
+		}
+	}
+
+	public function blacklist_ubah($id)
+	{
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{
+			if(!isset($id))
 			{
-				$this->session->set_flashdata('success', 'Data yang anda cari tidak ada');
 				redirect('setting/blacklist');
 			}
 			else
 			{
-				$this->load->view('setting/blacklist_ubah',$data);
+				$setting = $this->M_setting;
+				$validation = $this->form_validation;
+				$validation->set_rules($setting->blacklist_ubah_rules());
+				if($validation->run())
+				{
+					$respon = $setting->blacklist_ubah($id);
+					if($respon == 1)
+					{
+						$this->session->set_flashdata('success', 'Data berhasil diubah');
+					}
+					else
+					{
+						$this->session->set_flashdata('success', 'Data gagal diubah');
+					}
+					redirect('setting/blacklist');
+				}
+				$data['data_blacklist'] = $setting->get_blacklistById($id);
+				if(!$data['data_blacklist'])
+				{
+					$this->session->set_flashdata('success', 'Data yang anda cari tidak ada');
+					redirect('setting/blacklist');
+				}
+				else
+				{
+					$this->load->view('setting/blacklist_ubah',$data);
+				}
 			}
 		}
 	}
 
 	public function blacklist_hapus($id)
 	{
-		if($this->M_setting->blacklist_hapus($id) == 1)
+		if(!$this->M_bos->isLogin())
 		{
-			echo "1";
+			redirect('login');
+		}
+		else
+		{			
+			if($this->M_setting->blacklist_hapus($id) == 1)
+			{
+				echo "1";
+			}
+			else
+			{
+				echo "0";
+			}
+		}
+	}
+
+	public function libur()
+	{
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
 		}
 		else
 		{
-			echo "0";
+			$this->load->view("setting/libur");
+		}
+	}
+
+	public function data_libur()
+	{
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{
+			$data = $this->M_setting->get_libur();
+			echo json_encode($data);
+		}
+	}
+
+	public function libur_tambah()
+	{
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{
+			$setting = $this->M_setting;
+			$validation = $this->form_validation;
+			$validation->set_rules($setting->libur_rules());
+			if($validation->run())
+			{
+				$respon = $setting->libur_tambah();
+				if($respon == 1)
+				{
+					$this->session->set_flashdata('success', 'Data berhasil disimpan');
+					redirect('setting/libur');
+				}
+				else
+				{
+					$this->session->set_flashdata('success', 'Gagal menyimpan data');
+					redirect('setting/libur');
+				}
+			}
+			$this->load->view('setting/libur_tambah');
+		}
+	}
+
+	public function libur_ubah($id)
+	{
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{
+			if(!isset($id))
+			{
+				redirect('setting/libur');
+			}
+			else
+			{
+				$setting = $this->M_setting;
+				$validation = $this->form_validation;
+				$validation->set_rules($setting->libur_rules());
+				if($validation->run())
+				{
+					$respon = $setting->libur_ubah($id);
+					if($respon == 1)
+					{
+						$this->session->set_flashdata('success', 'Data berhasil diubah');
+					}
+					else
+					{
+						$this->session->set_flashdata('success', 'Data gagal diubah');
+					}
+					redirect('setting/libur');
+				}
+				$data['data_libur'] = $setting->get_liburById($id);
+				if(!$data['data_libur'])
+				{
+					$this->session->set_flashdata('success', 'Data yang anda cari tidak ada');
+					redirect('setting/libur');
+				}
+				else
+				{
+					$this->load->view('setting/libur_ubah',$data);
+				}
+			}
+		}
+	}
+
+	public function libur_hapus($id)
+	{
+		if(!$this->M_bos->isLogin())
+		{
+			redirect('login');
+		}
+		else
+		{			
+			if($this->M_setting->libur_hapus($id) == 1)
+			{
+				echo "1";
+			}
+			else
+			{
+				echo "0";
+			}
 		}
 	}
 
