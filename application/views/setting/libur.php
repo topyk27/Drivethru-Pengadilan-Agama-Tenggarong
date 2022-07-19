@@ -105,7 +105,7 @@
 	<script src="<?php echo base_url('asset/datatables-responsive/js/responsive.bootstrap4.min.js') ?>"></script>
 	<!-- Moment -->
 	<script src="<?php echo base_url('asset/moment/moment-with-locales.min.js') ?>"></script>
-	<script src="//cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+	<script src="<?php echo base_url('asset/datatables/plugin/1.10.19/sorting/datetime-moment.js'); ?>"></script>
 	<!-- AdminLTE App -->
 	<script src="<?php echo base_url('asset/dist/js/adminlte.min.js') ?>"></script>
     <script>const base_url = "<?php echo base_url(); ?>";</script>

@@ -96,8 +96,7 @@
 	<!-- Bootstrap 4 -->
 	<script src="<?php echo base_url('asset/bootstrap/js/bootstrap.bundle.min.js') ?>"></script>    
 	<!-- AdminLTE App -->
-	<script src="<?php echo base_url('asset/dist/js/adminlte.min.js') ?>"></script>
-	<script>const base_url = "<?php echo base_url(); ?>";const nama_pa_pendek = "<?php echo $this->session->userdata('nama_pa_pendek'); ?>";</script>	
+	<script src="<?php echo base_url('asset/dist/js/adminlte.min.js') ?>"></script>	
 	<script type="text/javascript">        
 		$(document).ready(function(){			
 			$("#sidebar_setting").addClass("active");

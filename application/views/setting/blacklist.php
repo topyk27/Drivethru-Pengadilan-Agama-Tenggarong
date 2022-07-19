@@ -117,8 +117,7 @@
 				url: base_url+'setting/blacklist_hapus/'+id,
 				dataType: "text",
 				success: function(respon)
-				{
-					console.log(respon);
+				{					
 					if(respon=="1")
 					{
 						dt_blacklist.ajax.reload();

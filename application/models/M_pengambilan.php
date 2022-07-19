@@ -487,7 +487,7 @@ class M_pengambilan extends CI_Model
 			$respon = [];
 			if(!empty($result))
 			{
-				$respon['alasan'] = "Libur" .$row->nama;
+				$respon['alasan'] = "Libur " .$row->nama;
 				$respon['success'] = false;
 			}
 			else
