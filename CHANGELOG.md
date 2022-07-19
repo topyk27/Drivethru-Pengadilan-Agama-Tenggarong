@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.5.1] - 2022-07-19
+### [changed]
+- Minify JS
+
 ## [1.5.0] - 2022-07-18
 ### [Add]
 - CRUD hari libur
